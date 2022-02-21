@@ -47,7 +47,7 @@ class MsgQueueController extends Controller
             return false;
         }
         $data = input('post.');
-        if (config('database.domain') == 'best20161108'){
+        if (config('database.subdomain') == 'best20161108'){
             $prefix = Config::get('cache.prefix');
             $phone_num = $this->getPhoneDetailByPhone($data[0]['PhoNum']);
             $messageKey = $prefix . 'message:';
