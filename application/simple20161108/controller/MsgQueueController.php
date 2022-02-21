@@ -80,6 +80,45 @@ class MsgQueueController extends Controller
         $key_phone_click = Config::get('cache.prefix') . 'click:' . $uid;
         return (new RedisController())->del($key_phone_click);
     }
+    
+    //接收上游转发过来的号码进行sync入库 -- MYS
+    public function receiveNumberMys(){
+        if (!Request::isPost()){
+            return false;
+        }
+        $data = input('post.');
+        $phone_num = $data['PhoNum'];
+        if (!$phone_num){
+            return '号码不存在';
+        }
+        //获取的短信数组每条循环写入到redis里面
+        //采集有序集合的方式,每条记录给一个分数
+        $messageKey = Config::get('cache.prefix') . 'message:';
+        $redis = new RedisController('sync');
+        $number = count($data);
+        //dump($data);
+        for ($i = 1; $i < $number+1; $i++) {
+            $redis->zAdd($phone_num, $this->getRedisSet('msg_' . $phone_num . '_score'), serialize($data[$number-$i]));
+        }
+        $redis->hIncrby('phone_receive', $phone_num);
+        //如果集合内数据超过50条,就把该条数据加入队列入库处理
+        $number = $redis->checkZset($phone_num);
+
+        if ($number > 20) {
+            //加入待处理列表
+            $redis->setSetValue('msg_queue', $phone_num);
+        }
+    }
+
+    //如果请求错误，回调通知，删除本地单个号码请求频率限制
+    public function callbackCurlFailNumberMys(){
+        $phone_num = input('post.phone_num');
+        if (!$phone_num){
+            return false;
+        }
+        $key_phone_click = 'click:' . $phone_num;
+        return (new RedisController())->del($key_phone_click);
+    }
 
     //易语言本地写入redis数据
     public function insertLocalSms($PhoNum = null, $smsNumber = null, $smsContent = null){
