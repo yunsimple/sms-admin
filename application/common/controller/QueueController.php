@@ -17,7 +17,7 @@ class QueueController extends Controller
     {
         //查询列表内是否有数据
         $redis = new RedisController('sync');
-        if(env('setting.subdomain') == 'best20161108'){
+        if(Config::get('database.subdomain') == 'best20161108'){
             $key = Config::get('cache.prefix') . 'message:';
         }else{
             $key = '';
@@ -82,7 +82,7 @@ class QueueController extends Controller
     {
         //查询列表内是否有数据
         $redis = new RedisController('sync');
-        if(env('setting.subdomain') == 'best20161108'){
+        if(Config::get('database.subdomain') == 'best20161108'){
             $key = Config::get('cache.prefix') . 'message:';
         }else{
             $key = 'msg_queue';
@@ -143,7 +143,7 @@ class QueueController extends Controller
     {
         //获取phone_id
         //dump($data);
-        if(env('setting.subdomain') == 'best20161108'){
+        if(Config::get('database.subdomain') == 'best20161108'){
             $phone_id = (new PhoneModel())::where('uid', '=', $phone_num)->value('id');
         }else{
             $phone_id = (new PhoneModel())::where('phone_num', '=', $phone_num)->value('id');

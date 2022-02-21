@@ -83,7 +83,8 @@ return [
     'redis_sync_port'     => env('redis.SYNC_PORT', 17480),
     'redis_sync_host'     => env('redis.SYNC_HOST', '127.0.0.1'),
     'redis_sync_auth'     => env('redis.SYNC_AUTH', ''),
-    'redis_master_port'     => env('redis.MASTER_PORT', 16699),
-    'redis_master_host'     => env('redis.MASTER_HOST', '150.158.96.247'),
-    'redis_master_auth'     => env('redis.MASTER_AUTH', 'r39iO6SE2uMYM5c54Kw9'),
+    'redis_master_port'   => env('redis.MASTER_PORT', 16699),
+    'redis_master_host'   => env('redis.MASTER_HOST', '150.158.96.247'),
+    'redis_master_auth'   => env('redis.MASTER_AUTH', 'r39iO6SE2uMYM5c54Kw9'),
+    'subdomain'           => env('setting.SUBDOMAIN', 'best20161108'),
 ];
