@@ -51,18 +51,8 @@ class RedisController extends Controller
         'host' => '127.0.0.1',
         'auth' => '',
     ];
-    protected $config_sync = [
-        //本地16699同步数据
-        'port' => 17480,
-        'host' => '127.0.0.1',
-        'auth' => '',
-    ];
-    protected $config_master = [
-        //需要远程同步交流的数据库
-        'port' => 16699,
-        'host' => '150.158.96.247',
-        'auth' => 'r39iO6SE2uMYM5c54Kw9',
-    ];
+    protected $config_sync;
+    protected $config_master;
 
 
     /**
@@ -76,8 +66,18 @@ class RedisController extends Controller
         if ($config == 'local'){
             $config = $this->config_local;
         }elseif($config == 'master'){
+            $this->config_master = [
+                'port' => config('database.redis_master_port'),
+                'host' => config('database.redis_master_host'),
+                'auth' => config('database.redis_master_auth'),
+            ];
             $config = $this->config_master;
         }else{
+            $this->config_sync = [
+                'port' => config('database.redis_sync_port'),
+                'host' => config('database.redis_sync_host'),
+                'auth' => config('database.redis_sync_auth'),
+            ];
             $config = $this->config_sync;
         }
         $this->attr = array_merge($this->attr, $attr);

@@ -159,10 +159,17 @@ class PhoneController extends BaseController
         if (!$result) {
             return show('切换失败,请稍候重试', '', 4000);
         } else {
-            $redis = new RedisController('sync');
-            $phone_detail = Db::table('phone')->where('phone_num', $phone_num)->value('uid');
-            $redis->deleteString(Config::get('cache.prefix') .'phone_detail_' . $phone_detail);
-            return show('修改成功1', $result);
+            if(env('setting.subdomain') == 'best20161108'){
+                $redis = new RedisController('sync');
+                $phone_detail = Db::table('phone')->where('phone_num', $phone_num)->value('uid');
+                $redis->deleteString(Config::get('cache.prefix') .'phone_detail_' . $phone_detail);
+            }else{
+                $redis = new RedisController();
+                $redis->delRedis();
+                $phone_detail = Db::table('phone')->where('phone_num', $phone_num)->value('uid');
+                $redis->deleteString('phone_detail_' . $phone_detail);
+            }
+            return show('修改成功', $result);
         }
     }
 
