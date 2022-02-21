@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="免费在线接码平台,提供专属隐私短信,免费手机短信接收代收服务,保障您的真实个人信息不被泄露.">
+    <meta name="keywords" content="隐私短信,隐私小号">
+	<meta property="og:title" content="[title]" />
+    <meta property="og:site_name" content="[title]" />
+    <meta property="og:url" content= "{$Request.domain}" />
+    <meta property="og:description" content="免费在线接码平台,提供专属隐私短信,免费手机短信验证码接收代收服务,保障您的真实个人信息不被泄露." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="zh-cn" />
+    <title>[title]</title>
+    <link rel="stylesheet" type="text/css" charset="utf-8" href="/static/layui/css/layui.css">
+    <!--<link rel="stylesheet" href="https://www.layuicdn.com/layui-v2.5.4/css/layui.css">-->
+    <!--<link rel="stylesheet" href="/static/sms/nav/common.min.css">-->
+    <link rel="stylesheet" type="text/css" charset="utf-8" href="/static/sms/nav/okayNav.min.css">
+    <link rel="stylesheet" type="text/css" charset="utf-8" href="/static/sms/css/index.css">
+    <!--hreflang-->
+
+    <!--hreflang-->
+	<script src="/static/layui/layui.js"></script>
+	<!--<script src="https://www.layuicdn.com/layui-v2.5.4/layui.js"></script>-->
+	<script src="/static/sms/js/jquery-3.4.1.min.js"></script>
+	
+	<script>
+		layui.use(['layer'], function () {
+		var layer = layui.layer
+	})
+	</script>
+
+    
+</head>
+<body>
+<div class="container">
+    <div id="header" class="okayNav-header">
+        <a class="okayNav-header__logo" href="/">
+            <!--<img src="/static/sms/images/logo.png" class="logo">-->
+            
+        </a>
+
+        <nav role="navigation" id="nav-main" class="okayNav">
+            <ul>
+                <li class="layui-nav-item"><a href="{$Request.domain}{:url('/index')}" id="dl" title="大陆号码短信验证码接收">大陆</a></li>
+                <li class="layui-nav-item"><a href="{$Request.domain}{:url('/gat')}" id="gat" title="港澳台号码短信验证码接收">港澳台</a></li>
+                <li class="layui-nav-item"><a href="{$Request.domain}{:url('/gw')}" id="gw" title="国外号码短信验证码接收">国外</a></li>
+                <!--<li class="layui-nav-item"><a href="https://en.yinsixiaohao.com">英文版</a></li>-->
+            </ul>
+        </nav>
+    </div>
+    <div class="layui-container">
+    	<div class="index-warn" style="display: none;">
+            <blockquote class="site-text layui-elem-quote">
+                <div class="layui-row">
+                    <div class="layui-col-md10 quote-left">
+                        <span><i class="layui-icon">&#xe645;</i>平台新上线【隐私邮件】，已正式上线测试中，欢迎试用！</span>
+                    </div>
+                    <div class="layui-col-md2 quote-right">
+                        <span><a href="{$Request.domain}{:url('/mail')}">查看详情</a>  <a href="/article/25.html">功能说明</a></span>
+                    </div>
+                </div>
+            </blockquote>
+        </div>
+        <div class="info">
+            <div class="info-left">
+                <blockquote class="layui-elem-quote layui-quote-nm warn blockquote">
+                    <ul>
+	                    <li> 在使用前你应该知晓下面的在线短信接收内容所有人都可以查看！</li>
+	                    <li> 请不要用这个电话号码接收重要内容！</li>
+	                    <li> 他人可以通过此电话号码找回密码，所以注册时应注意个人信息！</li>
+	                    <li> 请不要将这些电话号码用于银行、证券、金融、保险、支付、借贷等操作！</li>
+	                    <li> 本平台所有免费展示的号码都为临时号码，请及时解绑重要信息！</li>
+	                    <li> 在使用时即代表以上条款已同意！由此造成经济损失概不负责！</li>
+	                    <li> 本平台为非赢利网站！</li>
+	                    <li> 仅提供免费公用的短信业务，防止个人隐私信息泄露，不对外提供其他任何付费业务！</li>
+	                    <li> 如果本站对您有帮助，有需要可以推荐给您身边需要的朋友，就是对我们最大的支持！</li>
+                    </ul>
+                </blockquote>
+            </div>
+            <div class="info-right">
+				<!-- 顶部右边广告 -->
+<!--				<ins class="adsbygoogle info-right-adsense"
+				     style="display:block"
+				     data-ad-client="ca-pub-5224126064747013"
+				     data-ad-slot="5043006170"
+				     data-ad-format="auto"
+				     data-full-width-responsive="true">
+					
+				</ins>
+				<script>
+				     (adsbygoogle = window.adsbygoogle || []).push({});
+				</script>-->
+            </div>
+        </div>
+        <div>
+
+		</div>

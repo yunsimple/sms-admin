@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">系统设置</div>
+            <div class="layui-card-body">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">采集地址</li>
+                        <li>一键采集</li>
+                        <li>广告设置</li>
+                        <li>上线时间</li>
+                        <li>待开发..</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <form class="layui-form layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"></label>
+                                    <div class="layui-col-md6">
+                                        <blockquote class="layui-elem-quote layui-quote-nm">
+                                            更改此处的采集地址，会同时更新采集服务器的BT绑定地址，以及采集的解析地址，请勿滥用，只有当采集失败的时候才能使用！！！
+                                        </blockquote>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">当前使用：</label>
+                                    <div class="layui-col-md6">
+                                        <input type="text" name="old_url" autocomplete="off" class="layui-input"
+                                               DISABLED value="{$old_url}">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">采集地址：</label>
+                                    <div class="layui-col-md6">
+                                        <input type="text" name="url" required lay-verify="required"
+                                               placeholder="IP地址" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button type="button" class="layui-btn layui-btn-blue" lay-submit
+                                                lay-filter="curl_url">立即提交
+                                        </button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-tab-item">
+                            <form class="layui-form layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label"></label>
+                                    <div class="layui-col-md6">
+                                        <blockquote class="layui-elem-quote layui-quote-nm">
+                                            一键同时获取腾讯云EIP，更新采集服务器IP地址，请勿频繁使用，EIP闲置会收费，操作过程需要10秒左右，请勿关闭！！！
+                                        </blockquote>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">当前使用：</label>
+                                    <div class="layui-col-md6">
+                                        <input type="text" name="old_url" autocomplete="off" class="layui-input"
+                                               DISABLED value="{$old_url}">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                    	<div>http://{$old_url|substr=0,-6}:19490</div>
+                                        <button type="button" class="layui-btn layui-btn-blue" lay-submit
+                                                lay-filter="curl_update">一键更改采集IP
+                                        </button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-tab-item">
+                            <form class="layui-form layui-card-body">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">广告开关：</label>
+                                    <input type="checkbox" name="ad" lay-skin="switch" {$ad_switch} lay-text="开启|关闭">
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button type="button" class="layui-btn layui-btn-blue" lay-submit
+                                                lay-filter="curl_ad">设 置
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-tab-item">
+                            <div class="layui-form-item">
+                                    <label class="layui-form-label">设置时间：</label>
+                                    <div class="layui-col-md6">
+                                        <input type="text" id="onlineTime" name="phoneOnlineTime" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button type="button" class="layui-btn layui-btn-blue" lay-submit
+                                                lay-filter="curl_online_time">设置号码上线时间
+                                        </button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="layui-tab-item">待开发..</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/static/layui/layui.all.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    var form = layui.form
+        , layer = layui.layer
+    form.on('submit(curl_url)', function (data) {
+        console.log(data.field)
+        layer.confirm('确定要更改地址吗？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+        	layer.msg('请求已经发送!', {icon: 1});
+            $.ajax({
+                url: 'changeCurlUrl',
+                type: 'post',
+                data: data.field,
+                success: function (e) {
+                    if (e.error_code == 0) {
+                        layer.alert(e.msg, {icon: 1, anim: 6}, function () {
+                            window.location.reload()
+                        })
+                    } else {
+                        layer.alert(e.msg, {icon: 2, anim: 6})
+                    }
+
+                }
+            })
+        }, function () {
+            return
+        })
+    })
+    form.on('submit(curl_update)', function (data) {
+        console.log(data.field)
+        layer.confirm('确定要一键更新吗？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+        	layer.msg('请求已经发送!', {icon: 1});
+            $.ajax({
+                url: 'changeOneCurlUrl',
+                type: 'post',
+                data: data.field,
+                success: function (e) {
+                    if (e.error_code == 0) {
+                        layer.alert(e.msg, {icon: 1, anim: 6}, function () {
+                            window.location.reload()
+                        })
+                    } else {
+                        layer.alert(e.msg, {icon: 2, anim: 6})
+                    }
+
+                }
+            })
+        }, function () {
+            return
+        })
+    })
+    
+    form.on('submit(curl_online_time)', function (data) {
+        var params = {onlineDate: $('#onlineTime').val()}
+        layer.confirm('确定提交？', {
+            btn: ['确定', '取消'] //按钮
+        }, function () {
+        	layer.msg('请求已经发送!', {icon: 1});
+            $.ajax({
+                url: 'changePhoneOnlineTime',
+                type: 'post',
+                data: params,
+                success: function (e) {
+                    if (e.error_code == 0) {
+                        layer.alert(e.msg, {icon: 1, anim: 6}, function () {
+                            window.location.reload()
+                        })
+                    } else {
+                        layer.alert(e.msg, {icon: 2, anim: 6})
+                    }
+
+                }
+            })
+        }, function () {
+            return
+        })
+    })
+
+    form.on('submit(curl_ad)', function (data) {
+        let ad_switch = data.field.ad
+        $.ajax({
+            url: 'adSwitch',
+            type: 'post',
+            data: {ad_switch: ad_switch},
+            success: function (e) {
+                if (e.error_code != 0) {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                } else {
+                    layer.msg(e.msg, {icon: 1, anim: 6})
+                }
+            }
+        })
+    })
+layui.use('laydate', function(){
+  var laydate = layui.laydate;
+  
+  //执行一个laydate实例
+  laydate.render({
+    elem: '#onlineTime', //指定元素
+    type: 'datetime',
+    done: function(value, date, endDate){
+        $('#onlineTime').val(value)
+    }
+  });
+});
+</script>
+</body>
+</html>

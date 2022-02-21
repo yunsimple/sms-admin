@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title>管理后台</title>
+</head>
+<body class="layui-view-body">
+<div class="layui-row">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="form-box">
+                <table id="feedback" lay-filter="feedback"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/static/layui/layui.all.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">删除选中的数据</button>
+    </div>
+</script>
+
+<script>
+    var element = layui.element
+    var table = layui.table
+    var form = layui.form
+
+    //展示已知数据
+    table.render({
+        elem: '#feedback'
+        , url: 'adminMailData'
+        , cellMinWidth: 80
+        , toolbar: '#toolbar'
+        , cols: [[ //标题栏
+            {type: 'checkbox'}
+            , {field: 'subject', title: '来信标题'}
+            , {field: 'html', title: '来信内容'}
+            , {field: 'from', title: '来信地址'}
+            , {field: 'time', title: '来信时间', sort: true}
+        ]]
+        , skin: 'line' //表格风格
+        , even: true
+        , page: true //是否显示分页
+        , limit: 15 //每页默认显示的数量
+    })
+
+    function reset() {
+        window.location.reload()
+    }
+</script>
+<script>
+    //工具栏事件
+    table.on('toolbar(feedback)', function (obj) {
+        layer.confirm('确定要删除吗', {btn: ['坚决删除', '不删除']}, function () {
+            var checkStatus = table.checkStatus(obj.config.id)
+            var data = checkStatus.data;
+            $.ajax({
+                url: 'deletemany',
+                type: 'post',
+                data: {data: data},
+                success: function (e) {
+                    if (e.error_code != 0) {
+                        layer.msg(e.msg, {icon: 2, anim: 6})
+                    } else {
+                        layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                            window.location.reload()
+                        })
+                    }
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>

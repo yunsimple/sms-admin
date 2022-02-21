@@ -1,0 +1,16 @@
+{include file="../application/index/view/header.html" title="<?php echo $article['title']; ?> - 免费短信在线接收平台" /}
+        <div class="main-title">
+
+        </div>
+        <div class="main">
+            <div class="layui-row article">
+                <div class="article-title">
+                    <h1>{$article['title']}</h1>
+                </div>
+                <div class="article-content">
+                    {$article['content']|raw|htmlspecialchars_decode}
+                </div>
+            </div>
+        </div>
+    </div>
+{include file="../application/index/view/foot.html" /}

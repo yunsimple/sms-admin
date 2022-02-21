@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+    <style>
+        .layui-table-tool,.layui-table-page{
+            background-color: white;
+        }
+
+    </style>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row layui-col-space20">
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-body chart-card">
+                        <div class="chart-header">
+                            <div class="metawrap">
+                                <div class="meta">
+                                    <span>今日采集成功次数</span>
+                                </div>
+                                <div class="total success_count"></div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="contentwrap">
+
+                            </div>
+                        </div>
+                        <div class="chart-footer">
+                            <div class="field">
+                                <span>失败次数</span>
+                                <span class="failed_count"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-body chart-card">
+                        <div class="chart-header">
+                            <div class="metawrap">
+                                <div class="meta">
+                                    <span>今日使用代理</span>
+                                </div>
+                                <div class="total proxy_count"></div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="contentwrap">
+
+                            </div>
+                        </div>
+                        <div class="chart-footer">
+                            <div class="field">
+                                <span>当前代理</span>
+                                <span class="proxy_url"></span>
+                                <input type="text" class="proxy_url_number" style="margin-left:30px;padding-left:5px;width: 15%;height: 20px; border:1px solid #D9D9D9;">
+                            <a href="#" class="layui-btn layui-btn-xs layui-btn-blue" lay-event="getCheckData" style="margin-top: -3px;" onclick="set_proxy()">设置代理</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-body chart-card">
+                        <div class="chart-header">
+                            <div class="metawrap">
+                                <div class="meta">
+                                    <span>在线号码</span>
+                                </div>
+                                <div class="total online_count"></div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="contentwrap">
+
+                            </div>
+                        </div>
+                        <div class="chart-footer">
+                            <div class="field">
+                                <span>离线号码</span>
+                                <span class="offline_count"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-sm6 layui-col-md3">
+                <div class="layui-card">
+                    <div class="layui-card-body chart-card">
+                        <div class="chart-header">
+                            <div class="metawrap">
+                                <div class="meta">
+                                    <span>所有号码</span>
+                                </div>
+                                <div class="total total_count"></div>
+                            </div>
+                        </div>
+                        <div class="chart-body">
+                            <div class="contentwrap">
+
+                            </div>
+                        </div>
+                        <div class="chart-footer">
+                            <div class="field">
+                                <span>失效号码</span>
+                                <span class="lose_count"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-sm12 layui-col-md12">
+                    <table id="tablePhone" lay-filter="tablePhone"></table>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">清除缓存数据</button>
+            <button class="layui-btn layui-btn-blue" onclick="search()">查询今日数据</button>
+        </div>
+    </script>
+    <script src="/static/layui/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var element = layui.element
+        var table = layui.table
+        var form = layui.form
+
+        //展示已知数据
+        table.render({
+            elem: '#tablePhone'
+            , url: 'tabledata'
+            , cellMinWidth: 80
+            , toolbar: '#toolbar'
+            , cols: [[ //标题栏
+                {type: 'checkbox'}
+                , {field: 'warehouse', title: '仓库'}
+                , {field: 'url', title: '网址'}
+                , {field: 'success_number', title: '成功次数', sort: true}
+                , {field: 'failed_number', title: '失败', sort: true}
+            ]]
+            , skin: 'line' //表格风格
+            , even: true
+            , page: true //是否显示分页
+            , limit: 30 //每页默认显示的数量
+            , limits: [30,60,90,120,200,300,400,800]
+            , done: function (e) {
+                $('.success_count').text(e.success_count)
+                $('.proxy_url').text(e.proxy_url)
+                $('.lose_count').text(e.phone_count.lose)
+                $('.online_count').text(e.phone_count.online)
+                $('.offline_count').text(e.phone_count.offline)
+                $('.total_count').text(e.phone_count.total)
+                $('.proxy_count').text(e.proxy_count)
+                $('.failed_count').text(e.failed_count)
+                $('.proxy').text(e.proxy)
+            }
+        })
+        //工具栏事件
+        table.on('toolbar(tablePhone)', function (obj) {
+            layer.confirm('确定要删除吗', {btn: ['坚决删除', '不删除']}, function () {
+                $.ajax({
+                    url: 'clearcache',
+                    type: 'post',
+                    success: function (e) {
+                        if (e.error_code != 0) {
+                            layer.msg(e.msg, {icon: 2, anim: 6})
+                        } else {
+                            layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                                window.location.reload()
+                            })
+                        }
+                    }
+                })
+            })
+        })
+
+        //今日数据统计
+        function search() {
+            //执行重载
+            table.reload('tablePhone', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: {
+                    data:{time:'today'}
+                }
+            }, 'data')
+        }
+        
+        function set_proxy() {
+        var proxy_url_number = $('.proxy_url_number').val()
+        $.ajax({
+            url: 'setProxyUrlNumber',
+            type: 'post',
+            data: {'proxy_url_number' : proxy_url_number},
+            success: function (e) {
+                console.log(e.error_code)
+                if (e.error_code == 0){
+                    $('.proxy_url').text(e.data)
+                    layer.msg(e.msg,{icon: 1, anim: 6})
+                }else {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                }
+            }
+        })
+    }
+    </script>
+</body>
+</html>

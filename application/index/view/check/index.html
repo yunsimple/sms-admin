@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <title>热门号码推荐</title>
+    <link rel="stylesheet" type="text/css" charset="utf-8" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/sms/css/index.css?version=1.1.73">
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background: #fff;
+            font-family: "Microsoft Yahei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .system-message {
+            text-align: center;
+            margin-top: 10%;
+        }
+
+        .system-message h1 {
+            font-size: 100px;
+            font-weight: normal;
+            line-height: 120px;
+            margin-bottom: 12px;
+        }
+
+        .system-message .jump {
+            padding-top: 10px;
+        }
+
+        .system-message .jump a {
+            color: #333;
+        }
+
+        .system-message .success, .system-message .error {
+            line-height: 1.8em;
+            font-size: 36px;
+        }
+
+        .system-message .detail {
+            font-size: 12px;
+            line-height: 20px;
+            margin-top: 12px;
+            display: none;
+        }
+        .hidden{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="layui-container">
+        <div class="main" style="margin-top:10px;">
+            <div class="system-message">
+                <img src="../static/sms/images/error/spider.png"/>
+                <p class="success"></p>
+                <p class="detail"></p>
+                <div class="jump hidden" id="zh">请先进行验证</div>
+                <div class="jump hidden" id="en">Please verify first</div>
+                <form class="layui-form">
+                <div style="margin-top: 10px;" class="h-captcha" data-sitekey="d8230bc7-7834-49ac-bdce-acfa0f8fe8c1"></div>
+                <button lay-filter="hcaptcha" lay-submit style="margin-top: 10px;border-color:#4A5E77;background-color:#4462AF;color:#fff;" type="button" class="layui-btn layui-btn content">验证</button>
+                </form>
+            </div>
+
+            <div style="text-align: center">
+                <ins class="adsbygoogle"
+                     style="display:block"
+                     data-ad-client="ca-pub-5224126064747013"
+                     data-ad-slot="1953226178"
+                     data-ad-format="auto"
+                     data-full-width-responsive="true"></ins>
+            </div>
+
+            <blockquote class="layui-elem-quote layui-quote-nm" style="margin-top:30px;">热门号码</blockquote>
+
+            <div class="layui-row layui-col-space15" style="margin-top: 20px;">
+                {if !empty($data)}
+                {volist name="data" id="vo"}
+                {if $i == 5}
+	                <div class="layui-col-lg12 layui-col-md12 layui-col-sm12 layui-col-xs12 card">
+		                	<div class="layui-card" style="height:150px;">
+		                		{if $Think.server.REQUEST_URI == '/'}
+		                			{include file="../application/template/adsense/index_banner_middle_1.html" /}
+		                		{elseif $Think.server.REQUEST_URI == '/receive-sms-online/upcoming-phone-number.html'}
+                                    {include file="../application/template/adsense/upcoming_banner.html" /}
+		                		{else /}
+		                			{include file="../application/template/adsense/phone_banner_middle_1.html" /}
+		                		{/if}
+							</div>
+	                </div>
+                {else /}	
+                <div class="layui-col-lg6 layui-col-md6 layui-col-sm6 layui-col-xs12 card">
+                    <div class="layui-card" style="height:150px;">
+                        <div class="layui-card-header">
+                            {if $vo.online == 1}
+                            <span style="color: #8D8D8D" title="{$Think.lang.common_phone_online_title}"><img height="15px" src="/static/sms/images/online.png"></span>
+                            {else /}
+                            <span style="color: #8D8D8D"><img height="13px" src="/static/sms/images/offline.png"></span>
+                            {/if}
+                            {if ((time() - strtotime($vo['create_time'])) < 86400*7)}
+                            <img src="/static/sms/images/new.png" height="25px;" style="margin-top: -2px">
+                            {/if}
+                            <a href="/receive-sms-online/{$vo.country.en_title | strtolower}-phone-number.html">
+                            <img class="guoqi" src="/static/sms/images/guoqi/<?php if($vo['country']['id'] == 11){echo 'Canada';}else{echo $vo['country']['bh'];};?>.png"
+                                 alt="{$vo.country.en_title}{$Think.lang.common_number}">
+                            </a>
+                        </div>
+                        <div class="layui-card-body layuiadmin-card-list" style="text-align: center;">
+                            <p class="layuiadmin-big-font card-phone" lang="{$vo.warehouse_id}"
+                               title="{$Think.lang.phone_main_click}">
+                                <a href="/receive-sms-online/{$vo.country.en_title | strtolower}-phone-number-{if $vo.id > 1692}{$vo.uid}{else /}{$vo.phone_num}{/if}.html" class="clickA" target="_self"><span class="country-bh"><img src="/static/phone/{$vo['uid']}.png"></a>
+                            </p>
+                            <p>
+                                &nbsp;
+                                <span class="layuiadmin-span-color" style="margin-top:15px;"> </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                {/volist}
+                {else /}
+                <div class="none"><i class="layui-icon layui-icon-face-surprised"></i> {$Think.lang.common_empty_data}</div>
+                {/if}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src='https://www.hCaptcha.com/1/api.js' async defer></script>
+<script src="/static/sms/js/jquery-3.4.1.min.js"></script>
+<script src="/static/sms/js/clipboard.js"></script>
+<script src="/static/layui/layui.js"></script>
+<script src="https://recaptcha.net/recaptcha/api.js?render=6Lf71VQcAAAAAG1lsIdsb3aeTivSf_rkKUKaCu7V"></script>
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-PNY2B49YD9"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-PNY2B49YD9');
+    </script>
+<script>
+    layui.use(['layer'], function () {
+        var layer = layui.layer
+    })
+</script>
+<script type="text/javascript">
+    grecaptcha.ready(function() {
+        var renderKey = '6Lf71VQcAAAAAG1lsIdsb3aeTivSf_rkKUKaCu7V'
+        grecaptcha.execute(renderKey, {action: 'meessage'}).then(function(token) {
+            $.ajax({
+                url: "{:url('/recaptcha')}",
+                type: 'post',
+                data: {token:token, page:'check'},
+                success: function (e) {
+                    console.log(e)
+                    if (e.msg == 'success'){
+                        //window.history.back(-1);
+                    }else{
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    }
+                }
+            })
+        })
+    })
+
+    $(function () {
+        var lang = language()
+        if (lang == 'zh'){
+            $('#zh').removeClass('hidden')
+        }else {
+            $('#en').removeClass('hidden')
+        }
+    })
+</script>
+<script>
+    $('.content').click(function (e) {
+        var clipboard = new Clipboard('.content')
+        clipboard.on('success', function (e) {
+            layer.msg('{$Think.lang.foot_copy}' + e.text + '{$Think.lang.foot_copy_success}', {icon: 1})
+        })
+        clipboard.on('error', function (e) {
+            layer.msg('{$Think.lang.foot_copy}' + e.text + '{$Think.lang.foot_copy_failed}', {icon: 2})
+        })
+    })
+    $('.email').click(function (e) {
+        var clipboard = new Clipboard('.email')
+        clipboard.on('success', function (e) {
+            layer.msg('{$Think.lang.foot_copy}' + e.text + '{$Think.lang.foot_copy_success}', {icon: 1})
+        })
+        clipboard.on('error', function (e) {
+            layer.msg('{$Think.lang.foot_copy}' + e.text + '{$Think.lang.foot_copy_failed}', {icon: 2})
+        })
+    })
+    function language() {
+        var language=null;
+        if (navigator.appName == 'Netscape'){
+            language = navigator.language;
+        }
+        else{
+            language = navigator.browserLanguage;
+        }
+        if (language.indexOf('en') > -1){
+            lang = "en"
+        }
+        else if (language.indexOf('zh') > -1){
+            lang = "zh"
+        }
+        else{
+            lang = "en"
+        }
+        return lang
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+        //监听提交
+        form.on('submit(hcaptcha)', function(data){
+            var data = data.field
+            console.log(data)
+            if (!data['h-captcha-response']){
+                layer.msg('Please verify first', {icon: 2})
+                return
+            }
+            $.ajax({
+                url: '/hcaptcha',
+                type: 'post',
+                data: {response: data['h-captcha-response']},
+                beforeSend: function(){
+                    var index = layer.load(2);
+                },
+                success: function (e) {
+                    if (e.error_code == 0) {
+                        layer.msg(e.msg , {icon: 1})
+                        layer.closeAll('loading')
+                        window.location.href="/";
+                    } else {
+                        layer.msg(e.msg, {icon: 2})
+                    }
+                },
+                complete: function () {
+                    layer.closeAll('loading');
+                }
+            })
+        });
+    });
+
+</script>
+</html>

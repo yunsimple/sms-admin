@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">异常IP</div>
+                <form class="layui-form layui-card-body">
+                	<div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button type="button" class="layui-btn layui-btn-blue" lay-submit lay-filter="formData">清除Redis</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">异常IP {$impose_ip | count}</label>
+                        <div class="layui-col-md10">
+                            {volist name="impose_ip" id="vo" empty="暂时没有异常IP"}
+                            <input type="checkbox" name="{$vo}" title="{$key} = {$vo}" value="{$key}">
+                            {/volist}
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">机器人IP {$robot_ip|count}</label>
+                        <div class="layui-col-md10">
+                            {volist name="robot_ip" id="vo" empty="暂时没有异常IP"}
+                            <input type="checkbox" name="{$vo}" title="{$key} = {$vo}" value="{$key}">
+                            {/volist}
+                        </div>
+                    </div>
+                    <!--<div class="layui-form-item">
+                        <label class="layui-form-label">访问IP {$redis | count}</label>
+                        <div class="layui-col-md10">
+                            {volist name="redis" id="vo" empty="暂时没有访问IP"}
+                            <input type="checkbox" name="{$vo}" title="{$key} = {$vo}" value="{$key}">
+                            {/volist}
+                        </div>
+                    </div>-->
+                  
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/layui/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      var form = layui.form
+        ,layer = layui.layer
+        form.on('submit(formData)', function (data) {
+            console.log(data)
+            layer.confirm('确定要删除吗', {btn: ['坚决删除', '不删除']}, function () {
+                $.ajax({
+                    url: 'clearRedis',
+                    type: 'post',
+                    data: data.field,
+                    success: function (e) {
+                        if(e.error_code == 0){
+                            layer.msg(e.msg, {icon:1,anim:6}, function () {
+                                window.location.reload()
+                            })
+                        }else{
+                            layer.msg(e.msg, {icon:2,anim:6})
+                        }
+
+                    }
+                })
+            })
+        })
+    </script>
+</body>
+</html>

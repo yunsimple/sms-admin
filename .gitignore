@@ -1,0 +1,9 @@
+/.idea
+/.vscode
+*.log
+runtime
+.env
+.DS_Store
+public/*.cookie
+public/code
+public/static/phone

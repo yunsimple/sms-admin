@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <link rel="stylesheet" href="/static/wangEditor/wangEditor-fullscreen-plugin.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+<div class="layui-content">
+    <div class="layui-row">
+        <div class="layui-card">
+            <div class="layui-card-header">添加新文章</div>
+            <form class="layui-form layui-card-body" name="form-data">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文章标题：</label>
+                    <div class="layui-col-md6">
+                        <input type="text" name="title" required  lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否显示：</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="show" lay-skin="switch" checked value="1">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排 序 ：</label>
+                    <div class="layui-col-md6">
+                        <input type="text" name="sort" placeholder="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">内 容 ：</label>
+                    <div class="layui-col-md10">
+                        <div id="editor">
+
+                        </div>
+                    </div>
+                    <input type="hidden" value="" name="content" id="content" />
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">翻译语言：</label>
+                    <div class="layui-input-block">
+                        <input type="checkbox" name="lang" lay-skin="switch" checked value="zh">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn layui-btn-blue" lay-submit lay-filter="formData">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/static/layui/layui.all.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="/static/wangEditor/wangEditor.min.js"></script>
+<script src="/static/wangEditor/wangEditor-fullscreen-plugin.js?version=1.11"></script>
+<script type="text/javascript">
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    editor.customConfig.debug = false
+    // 或者 var editor = new E( document.getElementById('editor') )
+    editor.customConfig.uploadImgServer = '{:url('Article/update')}'  // 上传图片到服务器
+    editor.create()
+    E.fullscreen.init('#editor')
+    E.viewsource.init('#editor')
+    E.localcache.init('#editor')
+</script>
+<script>
+    //自动缓存编辑器中的内容
+    setInterval(function(){
+        var val = editor.txt.html()
+        console.log(val)
+        if (val.length >30 && val !== localStorage.getItem("local_cache")){
+            localStorage.setItem("local_cache", val);
+            console.log(localStorage.getItem("local_cache"));
+        }
+
+    },20*1000);
+</script>
+<script>
+    var form = layui.form
+        ,layer = layui.layer
+    form.on('submit(formData)', function (data) {
+        var content = editor.txt.html()
+        if (content.length == 11){
+            layer.msg('内容不能为空')
+            return false
+        }
+        document.getElementById('content').value = editor.txt.html()
+        $.ajax({
+            url: 'createArticle',
+            type: 'post',
+            data: $('form[name=form-data]').serialize(),
+            beforeSend: function(){
+                    var index = layer.load(2);
+                },
+            success: function (e) {
+                if(e.error_code == 0){
+                    layer.msg(e.msg, {icon:1,anim:6}, function () {
+                        window.location.reload()
+                    })
+                }else{
+                    layer.msg(e.msg, {icon:2,anim:6})
+                }
+
+            },
+                complete: function () {
+                    layer.closeAll('loading');
+                }
+        })
+    })
+</script>
+</body>
+</html>

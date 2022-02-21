@@ -1,0 +1,90 @@
+{include file="../application/index/view/header.html" title="<?php echo $title;?>" /}
+<!--        <div class="search">
+            <form class="layui-form search-form" action="">
+                <i class="layui-icon layui-icon-search search-search"></i>
+                <input type="text" name="phone_num" required="" lay-verify="required"
+                       placeholder="{$Think.get.phone_num|default='请输入要查询的号码'}"
+                       autocomplete="off"
+                       class="layui-input search-input">
+                <i class="layui-icon layui-icon-close search-close"></i>
+            </form>
+        </div>-->
+        <!-- 首页顶部banner自适应 -->
+<!--		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-5224126064747013"
+		     data-ad-slot="6256725935"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>-->
+        <div class="main" style="margin-top:10px;">
+            <div class="layui-row layui-col-space15">
+                {if !empty($data)}
+                {volist name="data" id="vo"}
+                {if $i == 4}
+	                <div class="layui-col-lg4 layui-col-md4 layui-col-sm6 layui-col-xs12 card">
+		                	<div class="layui-card" style="height:150px;">
+<!--		                		<ins class="adsbygoogle"
+								     style="display:block"
+								     data-ad-format="fluid"
+								     data-ad-layout-key="-fb+5z+3v-d0+94"
+								     data-ad-client="ca-pub-5224126064747013"
+								     data-ad-slot="4150954651"></ins>
+									<script>
+									     (adsbygoogle = window.adsbygoogle || []).push({});
+									</script>-->
+							</div>
+	                </div>
+	            {elseif $i == 12 /}
+	            	<div class="layui-col-lg4 layui-col-md4 layui-col-sm6 layui-col-xs12 card">
+		                	<div class="layui-card" style="height:150px;">
+<!--		                		<ins class="adsbygoogle"
+							     style="display:block"
+							     data-ad-format="fluid"
+							     data-ad-layout-key="-gn-9+54-75-4e"
+							     data-ad-client="ca-pub-5224126064747013"
+							     data-ad-slot="8877840215"></ins>
+								<script>
+								     (adsbygoogle = window.adsbygoogle || []).push({});
+								</script>-->
+							</div>
+	                </div>
+                {else /}	
+                <div class="layui-col-lg4 layui-col-md4 layui-col-sm6 layui-col-xs12 card">
+                    <div class="layui-card" style="height:150px;">
+                        <div class="layui-card-header">
+                            {if $vo.online == 1}
+                            <span class="layui-badge-dot layui-bg-green"></span> <span style="color: #8D8D8D">接收中</span>
+                            {else /}
+                            <span class="layui-badge-dot"></span> <span style="color: #8D8D8D">离线中</span>
+                            {/if}
+                            <img class="guoqi" src="/static/sms/images/guoqi/<?php if($vo['country']['id'] == 11){echo 'Canada';}else{echo $vo['country']['bh'];};?>.png"
+                                 title="{$vo.country.title}">
+                        </div>
+                        <div class="layui-card-body layuiadmin-card-list">
+                            <p class="layuiadmin-big-font card-phone" id="{$vo.phone_num}" lang="{$vo.warehouse_id}"
+                               title="点击查看最新短信验证码">
+                                <a href="{:url('index/Message/index', array('phone_num'=>$vo['phone_num']))}" class="clickA" target="_self"><span class="country-bh">+{$vo.country.bh}</span> {$vo.phone_num}</a>
+                            </p>
+                            <p>
+                                &nbsp;
+                                <span class="layuiadmin-span-color" style="margin-top:15px;">查询 {$vo.total_num} 次  &nbsp;<span class="copy"
+                                                                                                           data-clipboard-text="{$vo.phone_num}" title="复制在线短信号码">复制</span></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+                {/volist}
+                {else /}
+                <div class="none"><i class="layui-icon layui-icon-face-surprised"></i> 未查询到相关数据</div>
+                {/if}
+            </div>
+        </div>
+             <div class="page" style="text-align: center">
+                {$page|raw}
+            </div>
+    </div>
+    {include file="../application/index/view/foot.html" /}

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">发送邮件通知</div>
+                <form class="layui-form layui-card-body">
+                	
+                	<div class="layui-form-item">
+                        <label class="layui-form-label">收件人</label>
+                        <div class="layui-col-md6">
+                            <input type="text" name="mails" placeholder="英文逗号分隔邮件地址/留空发送全部订阅" class="layui-input">
+                        </div>
+                    </div>
+
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">邮件标题</label>
+                    <div class="layui-col-md6">
+                      <input type="text" name="subject" required  lay-verify="required" placeholder="请输入邮件标题" class="layui-input">
+                    </div>
+                  </div>
+
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">邮件内容</label>
+                        <div class="layui-col-md8">
+                            <textarea rows="10" name="body" required lay-verify="required" placeholder="邮件内容(html源码)" class="layui-textarea"></textarea>
+                        </div>
+                    </div>
+					
+					<div class="layui-form-item">
+                        <label class="layui-form-label"></label>
+                        模板：<a href="#" onclick="news()">上新通知</a> <a href="#" onclick="reply()">邮件回复</a>
+                    </div>
+
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button type="button" class="layui-btn layui-btn-blue" lay-submit lay-filter="formData">立即发送邮件</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/layui/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      var form = layui.form
+        ,layer = layui.layer
+        form.on('submit(formData)', function (data) {
+            
+            if ($("input[name='mails']").val() == ''){
+                        layer.confirm('确定要全员推送邮件吗？', {
+                          btn: ['确定','点错了'] //按钮
+                        }, function(){
+                          send_ajax(data)
+                        }, function(){
+                            return false
+                        })
+                }else{
+                    send_ajax(data)
+                }
+        })
+        
+        function send_ajax(data){
+            $.ajax({
+                url: 'sendMail',
+                type: 'post',
+                data: data.field,
+                beforeSend: function(){
+                    var index = layer.load(2);
+                },
+                success: function (e) {
+                    if(e.error_code == 0){
+                        layer.alert(e.msg, {icon:1,anim:6}, function () {
+                            //window.location.reload()
+                        })
+                    }else{
+                        layer.msg(e.msg, {icon:2,anim:6})
+                    }
+                },
+                complete: function () {
+                    layer.closeAll('loading');
+                }
+            })
+        }
+        
+        function news() {
+            let body_str = '2020年4月3日上新号码<br>\n' +
+                '<b>如果页面无法打开，请使用【科学上网】服务</b><br />\n'+
+                '<div style="font-size: 30px;">\n' +
+                '<a href="https://www..com/germany-phone-number/verification-code-15781080675.html?from=mail">+49 15781080675</a> DE 德国<br />\n' +
+                '<a href="https://www..com/philippines-phone-number/verification-code-9950194890.html?from=mail">+63 9950194890</a> PH 菲律宾<br />\n' +
+                '<a href="https://www..com/indonesia-phone-number/verification-code-89517340266.html?from=mail">+62 89517340266</a> IND 印度尼西亚<br />\n' +
+                '<a href="https://www..com/malaysia-phone-number/verification-code-1128730431.html?from=mail">+60 1128730431</a> MALA 马来西亚<br />\n' +
+                '<a href="https://www..com/vietnam-phone-number/verification-code-586061296.html?from=mail">+84 586061296</a> VIE 越南<br />\n' +
+                '<a href="https://www..com/thailand-phone-number/verification-code-962975239.html?from=mail">+66 962975239</a> THAI 泰国<br />\n' +
+                '<a href="https://www..com/china-phone-number/verification-code-17174933387.html?from=mail">+86 17174933387</a> CHINA 中国<br />\n' +
+                '<a href="https://www..com/sweden-phone-number/verification-code-731291500.html?from=mail">+46 731291500</a> SW 瑞典<br />\n' +
+                '<a href="https://www..com/france-phone-number/verification-code-757130310.html?from=mail">+33 757130310</a> FR 法国<br />\n' +
+                '</div><br>\n' +
+                '<span style="color: #FF0000">平台会不定期更新号码，如果您需要及时收到我们的订阅通知，就请将我们的官方邮件【service@.com】加入白名单或者加为好友，以免订阅邮件进入垃圾箱。该邮件仅为服务推送邮件，不会回复您的问题，如需留言反馈请从页面入口反馈信息。</span>'
+            let subject = '【隐私短信www..com】新号码上线订阅通知'
+            $("textarea[name='body']").val(body_str)
+            $("input[name='subject']").val(subject)
+        }
+        
+        function reply(){
+        	let subject = '站长回复'
+        	let body_str = '关于您的留言【】\n<br>站长回复： \n<br><span style="color: #FF0000">【<a href="https://www..com/?from=mail" >隐私短信</a>】平台会不定期更新号码，如果您需要及时收到我们的订阅通知，就请将我们的官方邮件【service@.com】加入白名单或者加为好友，以免订阅邮件进入垃圾箱。该邮件仅为服务推送邮件，不会回复您的问题，如需留言反馈请从页面入口反馈信息。</span>'
+        	$("textarea[name='body']").val(body_str)
+            $("input[name='subject']").val(subject)
+        }
+    </script>
+</body>
+</html>

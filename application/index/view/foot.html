@@ -1,0 +1,148 @@
+	<div style="text-align: center;margin-top:10px;">
+		<!-- 底部自适应banner -->
+<!--		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-5224126064747013"
+		     data-ad-slot="2612021593"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>-->
+	</div>
+    <div class="foot">
+        <p class="">Copyright © 2019 <a class="foot-link" href="{$Request.domain}">mytempsms</a>
+        </p>
+    </div>
+    <div class="main-right">
+    	<!-- 右侧垂直大幅广告 -- 在线 -->
+<!--		<ins class="adsbygoogle main-right-adsense"
+		     style="display:block;min-width:120px;max-width:300px;"
+		     data-ad-client="ca-pub-5224126064747013"
+		     data-ad-slot="5921958055"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		$(document).ready(function(){
+    		(adsbygoogle = window.adsbygoogle || []).push({});
+		})
+		</script>-->
+    </div>
+</div>
+<!-- Go to www.addthis.com/dashboard to customize your tools 
+<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-5e3a45909418904f"></script>-->
+
+</body>
+<script src="/static/sms/js/clipboard.js"></script>
+<script src="/static/sms/nav/jquery.okayNav-min.js.js"></script>
+<!--<script src="https://recaptcha.google.cn/recaptcha/api.js?render=6Lea0MAUAAAAAEjQFEvEUEdPK_gJmntXnudEG6mA"></script>-->
+<script type="text/javascript">
+    var navigation = $('#nav-main').okayNav({
+        swipe_enabled: false,
+    });
+</script>
+
+    <script>
+    var get_region = window.location.pathname
+    if(get_region == '/'){
+        get_region = '/index/index.html'
+    }
+    switch (get_region) {
+        case '/index.html':
+            $('#dl').addClass('link-hr')
+            break;
+        case '/gat.html':
+            $('#gat').addClass('link-hr')
+            break;
+        case '/gw.html':
+            $('#gw').addClass('link-hr')
+            break;
+        case '/article.html':
+            $('#article').addClass('link-hr')
+            break;
+        case '/mail.html':
+            $('#mail').addClass('link-hr')
+            break;
+    }
+    //点击复制
+    $('.copy').click(function (e) {
+        var clipboard = new Clipboard('.copy')
+        clipboard.on('success', function (e) {
+            layer.msg('复制' + e.text + '成功', {icon: 1})
+        })
+        clipboard.on('error', function (e) {
+            layer.msg('复制' + e.text + '失败', {icon: 2})
+        })
+    })
+
+    $('.clickA').click(function (e) {
+        if(window.matchMedia("(min-width: 767px)").matches){
+            layer.msg('数据较多，努力加载中...', {
+            	time: 0,
+				icon: 16,
+				shade: 0.05
+				})
+        }
+    })
+
+    //点击小程序
+    function clickXCX() {
+        layer.open({
+            type: 1,
+            title: false,
+            closeBtn: 0,
+            area: '280px',
+            skin: 'layui-layer-nobg', //没有背景色
+            shadeClose: true,
+            content: '<img src="/static/sms/images/ald.png">'
+        })
+    }
+    
+    //活动每日弹出一次
+/*    var today = new Date();
+    if (localStorage.getItem('alert') != today.getDate()){
+        layer.confirm("平台域名<br />【<span style='color: red;font-weight:bold;'>隐私短信</span>】www.<span style='color: red;font-weight:bold;'>Yin</span><span style='color: blue;font-weight:bold;'>Si</span><span style='color: brown;font-weight:bold;'>Duan</span><span style='color:cadetblue;font-weight:bold;'>Xin</span>.com <br />请大家按住Ctrl+D键收藏或者跟我一起默念！\\(^o^)/", {
+            btn: ['我记住了','就是不记'] //按钮
+        })
+        localStorage.setItem('alert', today.getDate())
+    }*/
+  
+    //右侧广告自适应宽度
+    var win_width =  $(window).width()
+    if (win_width > 772 && win_width < 990){
+        $('.main-right').width((win_width - 772)/2);
+    }
+    if (win_width > 992 && win_width < 1200){
+        $('.main-right').width((win_width - 992)/2);
+    }
+    if (win_width > 1200){
+        $('.main-right').width((win_width - 1200)/2);
+    }
+    
+    //top
+        layui.use('util', function(){
+        var util = layui.util;
+        //执行
+        util.fixbar({
+            bar1: false
+            ,click: function(type){
+            }
+        })
+    })
+    
+    //
+/*    grecaptcha.ready(function() {
+        var renderKey = '6Lea0MAUAAAAAEjQFEvEUEdPK_gJmntXnudEG6mA'
+        grecaptcha.execute(renderKey, {action: 'meessage'}).then(function(token) {
+            $.ajax({
+                url: "{:url('/recaptcha')}",
+                type: 'post',
+                data: {token:token},
+                success: function (e) {
+                    console.log(e)
+                }
+            })
+        })
+    })*/
+</script>
+</html>

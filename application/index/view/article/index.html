@@ -1,0 +1,18 @@
+{include file="../application/index/view/header.html" title="平台公告 免费短信在线接收平台" /}
+        <div class="main-title">
+
+        </div>
+        <div class="main">
+            <div class="layui-row article">
+                <div class="article-notice"><h1>平台公告</h1></div>
+                <div class="article-list">
+                    {volist name="article" id="vo"}
+                    <h3><a href="{:url('index/Article/detail', array('id'=>$vo.id))}">{$vo.title}</a></h3>
+                    <hr />
+                    {/volist}
+                </div>
+                {$article|raw}
+            </div>
+        </div>
+    </div>
+{include file="../application/index/view/foot.html" /}

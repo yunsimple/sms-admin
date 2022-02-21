@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+        <style>
+        .report{
+            color: #ffffff;
+        }
+        a.report:hover{
+            color: #ffffff;
+        }
+    </style>
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title>管理后台</title>
+</head>
+<body class="layui-view-body">
+<div class="layui-row">
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="form-box">
+                <div class="layui-form layui-form-item">
+                    <div class="layui-inline">
+                        <div class="layui-input-inline">
+                            <input type="text" id="phone_num" autocomplete="off" class="layui-input"
+                                   placeholder="输入要查询的号码">
+                        </div>
+                            <div class="layui-col-md3">
+                                <select name="warehouse_id" lay-verify="required" lay-filter="warehouse">
+                                    <option value="">请选择一个仓库</option>
+                                    {volist name="warehouse" id="vo"}
+                                    <option value="{$vo.id}">{$vo.url}</option>
+                                    {/volist}
+                                </select>
+                        </div>
+                        <div class="layui-col-md2" style="margin-left: 10px;">
+                                <select name="country_id" lay-verify="required" lay-filter="country">
+                                    <option value="">国家</option>
+                                    {volist name="country" id="vo"}
+                                    <option value="{$vo.id}">+{$vo.bh} {$vo.title}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        <button class="layui-btn layui-btn-blue" onclick="search()" style="margin-left: 10px;">查询</button>
+                        <button class="layui-btn layui-btn-primary" onclick="show_all()">所有号码</button>
+                        <button class="layui-btn layui-btn-primary" onclick="reset()">重载</button>
+                        
+                    </div>
+                </div>
+                <table id="tablePhone" lay-filter="tablePhone"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/static/layui/layui.all.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/html" id="online">
+    <input type="checkbox" lay-skin="switch" lay-text="在线|离线" lay-filter="online"
+           value="{{ d.online }}" name="{{d.phone_num}}" {{
+           d.online== 1
+           ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="show">
+    <input type="checkbox" lay-skin="switch" lay-text="显示|隐藏" lay-filter="show"
+           value="{{ d.show }}" name="{{d.phone_num}}" {{
+           d.show== 1
+           ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="type">
+    <input type="checkbox" lay-skin="switch" lay-text="显示|隐藏" lay-filter="type"
+           value="{{ d.type }}" name="{{d.phone_num}}" {{
+           d.type== 1
+           ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="display">
+    <input type="checkbox" lay-skin="switch" lay-text="显示|隐藏" lay-filter="display"
+           value="{{ d.display }}" name="{{d.phone_num}}" {{
+           d.display== 1
+           ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="phone">
+    <a lay-filter="phone" onclick="openMsg({{d.phone_num}})"  target="_blank">{{d.phone_num}}</a>
+</script>
+<script type="text/html" id="report">
+    {{#  if(d.report > 0){ }}<span class="layui-badge"><a id="{{d.phone_num}}" onclick="removeReport(this.id)" class="report">{{d.report}}</a></span>{{# } }}
+</script>
+<script type="text/html" id="id">
+    <a href="https://mytempsms.com/receive-sms-online/{{d.en_title}}-phone-number-{{d.uid}}.html" target="_blank">{{d.id}}</a>
+</script>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event="delete">删除选中的数据</button>
+        <button class="layui-btn layui-btn-sm layui-btn-blue" lay-event="online">批量在线/离线</button>
+        <button class="layui-btn layui-btn-sm layui-btn-blue" lay-event="show">批量显示/隐藏</button>
+    </div>
+</script>
+
+<script>
+    var element = layui.element
+    var table = layui.table
+    var form = layui.form
+
+    //展示已知数据
+    table.render({
+        elem: '#tablePhone'
+        , url: 'tabledata'
+        , cellMinWidth: 80
+        , toolbar: '#toolbar'
+        , cols: [[ //标题栏
+            {type: 'checkbox'}
+            , {field: 'id', title: 'ID', sort: true, templet:'#id', width:80}
+            , {field: 'phone_num', title: '号码', templet:'#phone', width:120}
+            , {field: 'report', title: '反馈', sort: true, templet: '#report', width:80}
+            , {field: 'country1', title: '国家'}
+            , {field: 'online', title: '在线', sort:true, templet: '#online'}
+            , {field: 'display', title: '前台展示', sort: true, templet: '#display'}
+            , {field: 'show', title: '是否删除', sort:true, templet: '#show'}
+            , {field: 'type', title: '类型', sort: true, edit:'text'}
+            , {field: 'sort', title: '排序', sort: true, edit:'text'}
+            , {field: 'en_sort', title: 'EN排序', sort: true, edit:'text'}
+            , {field: 'total_num', title: '点击', sort: true}
+            , {field: 'warehouse1', title: '仓库', width:200}
+            , {field: 'phone_id', title: 'IDD', sort: true, edit:'text'}
+            , {field: 'create_time', title: '创建时间', sort: true, width:180}
+        ]]
+        , skin: 'line' //表格风格
+        , even: true
+        , page: true //是否显示分页
+        , limit: 20 //每页默认显示的数量
+        , limits: [30,60,90,120,200,300,400,800]
+    })
+
+    //搜索重载
+    function search() {
+        var phone_num = $('#phone_num').val()
+        if (!phone_num) {
+            layer.msg('请输入查询号码', {icon: 2, anim: 6})
+        }
+        //执行重载
+        table.reload('tablePhone', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            , where: {
+                reset: '',
+                data: {
+                    phone_num: phone_num
+                }
+            }
+        }, 'data')
+    }
+    
+    //搜索重载
+    function show_all() {
+        var phone_num = $('#phone_num').val()
+        //执行重载
+        table.reload('tablePhone', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            , where: {
+                show_all: '',
+                data: {
+                    phone_num: phone_num
+                }
+            }
+        }, 'data')
+    }
+
+    function reset() {
+        window.location.reload()
+    }
+
+    function openMsg(phone_num) {
+        layer.open({
+            type: 2,
+            title: phone_num,
+            shadeClose: true,
+            shade: false,
+            maxmin: true, //开启最大化最小化按钮
+            area: ['80%', '90%'],
+            content: '/admin20161108/phone/adminshowmsg/phone_num/'+phone_num+'.html'
+        });
+    }
+</script>
+<script>
+    form.on('switch(show)', function (e) {
+        //var key = $("input[lay-filter='show']").val()
+        //console.log(key)
+        var value = e.value
+        var phone_num = this.name
+        $.ajax({
+            url: 'check01',
+            type: 'post',
+            data: {phone_num: this.name, value: e.value, field: 'show'},
+            success: function (e) {
+                if (e.error_code != 0) {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                } else {
+                    if (value == 1){
+                        $("input[name='"+phone_num+"']").val('0')
+                    }
+                    if (value == 0) {
+                        $("input[name='"+phone_num+"']").val('1')
+                    }
+                    layer.msg(e.msg, {icon: 1, anim: 6})
+                }
+            }
+        })
+    })
+    form.on('switch(online)', function (e) {
+        //var key = $("input[lay-filter='online']").val()
+        //var key = e.value
+        var value = e.value
+        var phone_num = this.name
+        $.ajax({
+            url: 'check01',
+            type: 'post',
+            data: {phone_num: this.name, value: e.value, field: 'online'},
+            success: function (e) {
+                if (e.error_code != 0) {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                } else {
+                    if (value == 1){
+                        $("input[name='"+phone_num+"']").val('0')
+                    }
+                    if (value == 0) {
+                        $("input[name='"+phone_num+"']").val('1')
+                    }
+                    layer.msg(e.msg, {icon: 1, anim: 6})
+                }
+            }
+        })
+    })
+    
+        form.on('switch(display)', function (e) {
+        //var key = $("input[lay-filter='online']").val()
+        //var key = e.value
+        var value = e.value
+        var phone_num = this.name
+        $.ajax({
+            url: 'check01',
+            type: 'post',
+            data: {phone_num: this.name, value: e.value, field: 'display'},
+            success: function (e) {
+                if (e.error_code != 0) {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                } else {
+                    if (value == 1){
+                        $("input[name='"+phone_num+"']").val('0')
+                    }
+                    if (value == 0) {
+                        $("input[name='"+phone_num+"']").val('1')
+                    }
+                    layer.msg(e.msg, {icon: 1, anim: 6})
+                }
+            }
+        })
+    })
+    //工具栏事件
+    table.on('toolbar(tablePhone)', function (obj) {
+        layer.confirm('确定要删除吗', {btn: ['坚决删除', '不删除']}, function () {
+            var checkStatus = table.checkStatus(obj.config.id)
+            var data = checkStatus.data;
+            switch (obj.event) {
+                case 'delete':
+                    $.ajax({
+                        url: 'deleteMany',
+                        type: 'post',
+                        data: {data: data},
+                        success: function (e) {
+                            if (e.error_code != 0) {
+                                layer.msg(e.msg, {icon: 2, anim: 6})
+                            } else {
+                                layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                                    window.location.reload()
+                                })
+                            }
+                        }
+                    })
+                break;
+                case 'online':
+                    var value = data[0]['online']
+                    $.ajax({
+                        url: 'batchCheck',
+                        type: 'post',
+                        data: {data: data, type: 'online', value: value},
+                        success: function (e) {
+                            if (e.error_code != 0) {
+                                layer.msg(e.msg, {icon: 2, anim: 6})
+                            } else {
+                                layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                                    window.location.reload()
+                                })
+                            }
+                        }
+                    })
+                break;
+                case 'show':
+                    var value = data[0]['show']
+                    $.ajax({
+                        url: 'batchCheck',
+                        type: 'post',
+                        data: {data: data, type: 'show', value: value},
+                        success: function (e) {
+                            if (e.error_code != 0) {
+                                layer.msg(e.msg, {icon: 2, anim: 6})
+                            } else {
+                                layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                                    window.location.reload()
+                                })
+                            }
+                        }
+                    })
+                break;
+            }
+        })
+    })
+    //监听单元格编辑
+    table.on('edit(tablePhone)', function(obj){
+        var value = obj.value //得到修改后的值
+            ,data = obj.data //得到所在行所有键值
+            ,field = obj.field //得到字段
+
+        $.ajax({
+            url: 'check01',
+            type: 'post',
+            data: {phone_num: data['phone_num'], value: value, field: field},
+            success: function (e) {
+                if (e.error_code != 0) {
+                    layer.msg(e.msg, {icon: 2, anim: 6})
+                } else {
+                    layer.msg(e.msg, {icon: 1, anim: 6})
+                }
+            }
+        })
+    })
+
+    //仓库下拉监听
+    form.on('select(warehouse)', function (data) {
+        console.log(data.value)
+        //执行重载
+        table.reload('tablePhone', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            , where: {
+                warehouse: '',
+                data: {
+                    warehouse_id: data.value
+                }
+            }
+        }, 'data')
+    })
+    
+    //仓库下拉监听 country
+    form.on('select(country)', function (data) {
+        console.log(data.value)
+        //执行重载
+        table.reload('tablePhone', {
+            page: {
+                curr: 1 //重新从第 1 页开始
+            }
+            , where: {
+                country: '',
+                data: {
+                    country_id: data.value
+                }
+            }
+        }, 'data')
+    })
+    
+    function removeReport(phone_num) {
+        $.ajax({
+            url: '{:url('removeReport')}',
+            type: 'post',
+            data: {phone_num : phone_num},
+            success: function (e) {
+            if (e.error_code != 0) {
+                layer.msg(e.msg, {icon: 2, anim: 6})
+            } else {
+                layer.msg(e.msg, {icon: 1, anim: 6})
+            }
+        }
+    })
+    }
+
+</script>
+</body>
+</html>

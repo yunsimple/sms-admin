@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">添加新仓库</div>
+                <form class="layui-form layui-card-body">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">仓库名称</label>
+                        <div class="layui-col-md6">
+                            <input type="text" name="title" required  lay-verify="required" placeholder="一般是域名主体如:baidu" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">仓库网址</label>
+                    <div class="layui-col-md6">
+                      <input type="text" name="url" required  lay-verify="required" placeholder="请输入完整网址https://www.baidu.com/" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">是否显示</label>
+                    <div class="layui-input-block">
+                      <input type="checkbox" name="show" lay-skin="switch" checked value="1">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">保存模式</label>
+                    <div class="layui-input-block">
+                      <input type="checkbox" name="message_save" lay-skin="switch" checked value="1">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button type="button" class="layui-btn layui-btn-blue" lay-submit lay-filter="formData">立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/layui/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      var form = layui.form
+        ,layer = layui.layer
+        form.on('submit(formData)', function (data) {
+            $.ajax({
+                url: 'createwarehouse',
+                type: 'post',
+                data: data.field,
+                success: function (e) {
+                    if(e.error_code == 0){
+                        layer.msg(e.msg, {icon:1,anim:6}, function () {
+                            //window.location.reload()
+                        })
+                    }else{
+                        layer.msg(e.msg, {icon:2,anim:6})
+                    }
+
+                }
+            })
+        })
+    </script>
+</body>
+</html>

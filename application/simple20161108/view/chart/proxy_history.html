@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body" onLoad="init()">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">每日采集总数</div>
+                <div id="count" style="width: 100%;height:400px;"></div>
+            </div>
+
+            <div class="layui-card">
+                <div class="layui-card-header">各仓库采集统计</div>
+                <div id="warehouse" style="width: 100%;height:800px;"></div>
+            </div>
+        </div>
+    </div>
+   <!-- <script src="/static/layui/layui.all.js"></script>-->
+    <script src="/static/common/js/echarts.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        function warehouse() {
+            // 基于准备好的dom，初始化echarts实例
+            var warehouse = echarts.init(document.getElementById('warehouse'))
+            // 指定图表的配置项和数据
+            option = {
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                    data: [{foreach $history[0]['data'] as $key=>$vo}'{$vo.warehouse}',{/foreach}]
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis:  {
+                    type: 'value'
+                },
+                yAxis: {
+                    type: 'category',
+                    data: [{foreach $history as $key=>$vo}'{$vo.time}',{/foreach}]
+                },
+                series: [
+                    {volist name="history[0]['data']" id="vo"  key="k"}
+                    {
+                        name: '{$vo.warehouse}',
+                        type: 'bar',
+                        stack: '采集次数',
+                        label: {},
+                        data: [{foreach $history as $key=>$vo}{$vo['data'][$k-1]['success_number']},{/foreach}]
+                    },
+                    {/volist}
+                    ]
+            }
+            // 使用刚指定的配置项和数据显示图表。
+            warehouse.setOption(option);
+        }
+    function count() {
+        var count = echarts.init(document.getElementById('count'))
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data:['成功次数', '失败次数', '代理IP']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [{foreach $history as $key=>$vo}'{$vo.time}',{/foreach}],
+        axisPointer: {
+            type: 'shadow'
+        }
+    }
+    ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '成功次数',
+                min: 0,
+                max: 500000,
+                interval: 100000,
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            },
+            {
+                type: 'value',
+                name: '代理IP',
+                min: 0,
+                max: 150,
+                interval: 30,
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            }
+        ],
+            series: [
+            {
+                name:'成功次数',
+                type:'bar',
+                data:[{foreach $history as $key=>$vo}{$vo.success_count},{/foreach}]
+        },
+        {
+            name:'失败次数',
+                type:'bar',
+                data:[{foreach $history as $key=>$vo}{$vo.failed_count},{/foreach}]
+        },
+        {
+            name:'代理IP',
+                type:'line',
+            yAxisIndex: 1,
+            data:[{foreach $history as $key=>$vo}{$vo.proxy_count},{/foreach}]
+        }
+        ]
+        };
+        count.setOption(option);
+    }
+
+    function init(){
+        count();
+        warehouse();
+    }
+    </script>
+</body>
+</html>

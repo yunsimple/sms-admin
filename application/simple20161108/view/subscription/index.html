@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title>管理后台</title>
+</head>
+<body class="layui-view-body" onLoad="init()">
+<div class="layui-row">
+
+    <div class="layui-card">
+        <div class="layui-card-header">订阅统计</div>
+        <div id="feedback" style="width: 99%;height:400px;"></div>
+    </div>
+
+    <div class="layui-card">
+        <div class="layui-card-body">
+            <div class="form-box">
+                <table id="subscription" lay-filter="subscription"></table>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="/static/layui/layui.all.js"></script>
+<script src="/static/common/js/echarts.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="getCheckData">删除选中的数据</button>
+    </div>
+</script>
+
+<script>
+    var element = layui.element
+    var table = layui.table
+    var form = layui.form
+
+    //展示已知数据
+    table.render({
+        elem: '#subscription'
+        , url: 'tabledata'
+        , cellMinWidth: 80
+        , toolbar: '#toolbar'
+        ,defaultToolbar: ['filter', 'exports', 'print']
+        , cols: [[ //标题栏
+            {type: 'checkbox'}
+            , {field: 'id', title: 'ID', sort: true}
+            , {field: 'mailbox', title: '邮箱地址'}
+            , {field: 'ip', title: 'IP地址'}
+            , {field: 'create_time', title: '创建时间', sort: true}
+        ]]
+        , skin: 'line' //表格风格
+        , even: true
+        , page: true //是否显示分页
+        , limit: 15 //每页默认显示的数量
+        , limits: [30,300,900,1500,2000,3000,4000]
+    })
+
+    function reset() {
+        window.location.reload()
+    }
+</script>
+<script>
+    //工具栏事件
+    table.on('toolbar(subscription)', function (obj) {
+        if (obj.event === 'getCheckData'){
+            layer.confirm('确定要删除吗', {btn: ['坚决删除', '不删除']}, function () {
+                var checkStatus = table.checkStatus(obj.config.id)
+                var data = checkStatus.data;
+                $.ajax({
+                    url: 'deletemany',
+                    type: 'post',
+                    data: {data: data},
+                    success: function (e) {
+                        if (e.error_code != 0) {
+                            layer.msg(e.msg, {icon: 2, anim: 6})
+                        } else {
+                            layer.msg(e.msg, {icon: 1, anim: 6}, function () {
+                                window.location.reload()
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    })
+</script>
+<script>
+    function feedback() {
+        // 基于准备好的dom，初始化echarts实例
+        var feedback = echarts.init(document.getElementById('feedback'))
+        option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data: ['日', '月']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: [{foreach $dates['date'] as $vo}'{$vo}',{/foreach}],
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '个',
+                    min: 0,
+                    max: 90,
+                    interval: 15,
+                    axisLabel: {
+                        formatter: '{value} '
+                    }
+                },
+                {
+                    type: 'value',
+                    name: '个',
+                    min: 0,
+                    max: 1800,
+                    interval: 300,
+                    axisLabel: {
+                        formatter: '{value} '
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '日',
+                    type: 'bar',
+                    data: [{foreach $dates['today'] as $vo}'{$vo}',{/foreach}]
+                },
+                {
+                    name: '月',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    data: [{foreach $dates['month'] as $vo}'{$vo}',{/foreach}]
+                }
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        feedback.setOption(option);
+        }
+            function init(){
+                feedback();
+            }
+</script>
+</body>
+</html>

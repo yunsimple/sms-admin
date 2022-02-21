@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <link rel="stylesheet" href="/static/admin/css/view.css"/>
+    <title></title>
+</head>
+<body class="layui-view-body">
+    <div class="layui-content">
+        <div class="layui-row">
+            <div class="layui-card">
+                <div class="layui-card-header">添加新号码</div>
+                <form class="layui-form layui-card-body">
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-col-md6">
+                      <input type="text" name="phone_num" required  lay-verify="required" placeholder="请输入号码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属国家</label>
+                        <div class="layui-col-md6">
+                            <select name="country_id" lay-verify="required" lay-filter="country" lay-search>
+                                <option value="">请选择一个国家</option>
+                                {volist name="country" id="vo"}
+                                <option value="{$vo.id}|{$vo.bh}">+{$vo.bh} {$vo.title}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">所属仓库</label>
+                        <div class="layui-col-md6">
+                            <select name="warehouse_id" lay-verify="required" lay-filter="warehouser" lay-search>
+                                <option value="">请选择一个仓库</option>
+                                {volist name="warehouse" id="vo"}
+                                <option value="{$vo.id}">{$vo.url}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-form-item" id="phone_idd" style="display: none">
+                        <label class="layui-form-label">对 应 ID</label>
+                        <div class="layui-col-md6">
+                            <input type="text" name="phone_id" lay-verify="" placeholder="号码对应ID,可不填" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">排 序</label>
+                        <div class="layui-col-md6">
+                            <input type="text" name="sort" lay-verify="" placeholder="越高排序越靠前" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">号码类型</label>
+                        <div class="layui-col-md6">
+                            <input type="text" name="type" lay-verify="" placeholder="1前台展示，2上新展示号码" autocomplete="off" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否在线</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="online" lay-skin="switch" checked value="1">
+                        </div>
+                    </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">是否显示</label>
+                    <div class="layui-input-block">
+                      <input type="checkbox" name="show" lay-skin="switch" checked value="1">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                        <label class="layui-form-label">前台展示</label>
+                        <div class="layui-input-block">
+                            <input type="checkbox" name="display" lay-skin="switch" checked value="1">
+                        </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button type="button" class="layui-btn layui-btn-blue" lay-submit lay-filter="formData">立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/static/layui/layui.all.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+      var form = layui.form
+        ,layer = layui.layer
+        form.on('submit(formData)', function (data) {
+            $.ajax({
+                url: 'createphone',
+                type: 'post',
+                data: data.field,
+                success: function (e) {
+                    if(e.error_code == 0){
+                        layer.alert(e.msg, {icon:1,anim:6, time:0})
+                    }else{
+                        layer.alert(e.msg, {icon:2,anim:6, time:0})
+                    }
+
+                }
+            })
+        })
+        //下拉选择框
+        form.on('select(warehouser)', function (e) {
+            if (e.value == 2 || e.value == 6 || e.value == 9 || e.value == 14 || e.value == 19 || e.value == 20 || e.value == 22 || e.value == 25 || e.value == 28){
+                console.log(11)
+                $('#phone_idd').css('display', 'block')
+            }else{
+                $('#phone_idd').css('display', 'none')
+            }
+        })
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+{include file="../application/index/view/header.html" title="<?php echo $country .' 手机电话号码 +'. $bh . $phone_num; ?> - 免费短信在线接收平台" /}
+		<!-- message顶部banner自适应 -->
+<!--		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-5224126064747013"
+		     data-ad-slot="2212002661"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>-->
+        <div class="main-title">
+        	<h1 class="copy" data-clipboard-text="{$phone_num}" style="color: #0C0C0C;font-weight:500">在线接收短信验证码号码  +{$bh} {$phone_num}</h1>
+            <button id="{$phone_num}" class="layui-btn" style="background-color: #617C9E" onclick="load(this.id)"><i class="layui-icon">&#xe669;</i> 获取本页最新短信</button>
+            <button class="layui-btn clickA" style="background-color: #849FC2" onclick="random()"><i class="layui-icon">&#xe674;</i> 随机获取一个号码</button>
+            <div style="font-size:10px; margin: 5px 0;"></div>
+            <button type="button" class="layui-btn layui-btn-xs" style="background-color: #C6C7C8" onclick="report(this.id)" id="{$phone_num}"><i class="layui-icon">&#xe69c;</i> 报告，无法获取短信</button>
+        </div>
+        <div class="main">
+            <div class="layui-row">
+                <table class="layui-table" lay-even="" lay-skin="row" lay-size="lg">
+                    <colgroup>
+                        <col>
+                        <col>
+                        <col>
+                        <col>
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th style="background-color: #4A5E77;color: #ffffff;text-align:center">接收号码</th>
+                        <th style="background-color: #4A5E77;color: #ffffff;text-align:center">短信内容</th>
+                        <th style="background-color: #4A5E77;color: #ffffff;text-align:center">接收时间</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {volist name="data" id="vo"}
+                    {if $i == 3 || $i == 11}
+                    <tr>
+                        <td colspan="3" style="text-align:center;">
+	                             <!--Adsense message信息流广告-->
+<!--								<ins class="adsbygoogle"
+							     style="display:block"
+							     data-ad-format="fluid"
+							     data-ad-layout-key="-fx-s+3z-gj+lq"
+							     data-ad-client="ca-pub-5224126064747013"
+							     data-ad-slot="9289380089">
+								</ins>
+							<script>
+							     (adsbygoogle = window.adsbygoogle || []).push({});
+							</script>-->
+                        </td>
+                    </tr>
+                    {else /}
+                    <tr>
+                        <td style="text-align:center;">*{$vo.smsNumber|substr=-5}</td>
+                        <td style="">{$vo.smsContent}</td>
+                        <td style="text-align: center">{$vo.smsDate == '' ? '...' : $vo.smsDate}</td>
+                    </tr>
+                    {/if}
+                    {/volist}
+                    </tbody>
+                </table>
+	                <div style="text-align: center">
+	                	<!--底部banner-->
+
+					</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page" style="text-align: center">
+		{$page|raw}
+	</div>
+    
+<script>
+    var online = {$online};
+    if (online == 0){
+        layer.msg('该号码暂时离线中，请先尝试使用其他号码')
+    }
+    
+	
+	 function report(phone_num) {
+        layer.confirm('确定多次无法获取最新短信？', {
+            btn: ['真的获取不到','重新获取']
+        }, function(){
+            $.ajax({
+                url: '{:url('/report')}',
+                type: 'post',
+                data: {phone_num: phone_num},
+                success: function (e) {
+                    if (e.error_code != 0) {
+                        layer.msg(e.msg, {icon: 2, anim: 6})
+                    } else {
+                        layer.msg(e.msg, {icon: 1, anim: 6})
+                    }
+                }
+            })
+        }, function(){
+            location.reload();
+        });
+    }
+    function random() {
+        $.ajax({
+            url: '{:url('/random')}',
+            type: 'post',
+            success: function (e) {
+            if (e.error_code != 0) {
+                layer.msg(e.msg, {icon: 2, anim: 6})
+            } else {
+            	layer.msg('随机号码加载中...', {
+		            time: 0,
+		            icon: 16,
+		            shade: 0.05
+		        })
+                window.location.href = '/message/' + e.data + '.html';
+            }
+        }
+    })
+    }
+    function load(e) {
+        layer.msg('数据较多，努力加载中...', {
+            time: 0,
+            icon: 16,
+            shade: 0.05
+        })
+        window.location.href = '/message/' + e + '.html';
+    }
+</script>
+{include file="../application/index/view/foot.html" /}

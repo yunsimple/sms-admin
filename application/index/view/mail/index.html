@@ -1,0 +1,81 @@
+{include file="../application/index/view/header.html" title="隐私邮箱 - 临时邮箱、临时Email、十分钟邮箱、临时邮件" /}
+<link rel="stylesheet" href="/static/sms/css/mail.css?version=0.0.1">
+<script src="/static/sms/js/mail.js?version=1.0.1"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+    })
+</script>
+        <div class="main" style="margin-top:10px;">
+            <div class="layui-row">
+                <div class="layui-col-lg12 card">
+                    <div class="layui-card" style="min-height:250px;">
+                        <div class="layui-card-header">
+                            隐私邮箱 (测试中)
+                        </div>
+                        <div class="layui-card-body">
+                            <div class="main-body-name">
+                                <span class="copy" data-clipboard-text="{$email|default = ''}" id="email">{$email | default = ''}</span>
+                            </div>
+                            <div class="mail-body-middle layui-form">
+                                <div class="layui-row layui-col-space10">
+                                    <div class="layui-col-lg2 layui-col-sm1"></div>
+                                    <div class="layui-col-lg4 layui-col-sm5 layui-col-xs12">
+                                            <input type="text" name="email_name" lay-verify="required" placeholder="提示：输入您想要的邮箱名 / 点击随机邮箱" autocomplete="off" class="layui-input">
+                                    </div>
+                                    <div class="layui-col-lg4 layui-col-sm5 layui-col-xs12">
+                                            <select name="site" lay-verify="required" lay-filter="aihao">
+                                                <option value="0">@yinsiduanxin.com</option>
+                                            </select>
+                                    </div>
+                                    <div class="layui-col-lg2 layui-col-sm1">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mail-body-top">
+                                <button class="layui-btn" onclick="mail_apply('apply')">申请邮箱</button>
+                                <button class="layui-btn" onclick="mail_apply()">随机邮箱</button>
+                                <button class="layui-btn" onclick="mail_delete()">销毁邮箱</button>
+                                <button class="layui-btn" onclick="mail_list()" id="mail-list">接收邮件</button>
+                            </div>
+                            <div class="mail-body-bottom">
+                                <table class="layui-table" lay-size="lg">
+                                    <colgroup>
+                                        <col width="20%">
+                                        <col width="60%">
+                                        <col width="20%">
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>发件人</th>
+                                        <th>主题</th>
+                                        <th>时间</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="mail_list">
+                                    <tr>
+                                        <td colspan="3" class="mail-null" onclick="mail_list()" id="mail-td-list">点击接收邮件查收邮件</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+					
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 底部自适应banner -->
+<!--		<ins class="adsbygoogle"
+		     style="display:block"
+		     data-ad-client="ca-pub-5224126064747013"
+		     data-ad-slot="2612021593"
+		     data-ad-format="auto"
+		     data-full-width-responsive="true"></ins>
+		<script>
+		     (adsbygoogle = window.adsbygoogle || []).push({});
+		</script>-->
+    </div>
+    		
+    {include file="../application/index/view/foot.html" /}
