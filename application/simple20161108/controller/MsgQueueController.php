@@ -47,20 +47,30 @@ class MsgQueueController extends Controller
             return false;
         }
         $data = input('post.');
-        $phone_num = $this->getPhoneDetailByPhone($data[0]['PhoNum']);
+        if (config('database.domain') == 'best20161108'){
+            $prefix = Config::get('cache.prefix');
+            $phone_num = $this->getPhoneDetailByPhone($data[0]['PhoNum']);
+            $messageKey = $prefix . 'message:';
+            $scoreKey = $messageKey . $phone_num . '_score';
+            $incKey = $prefix . 'phone_receive';
+        }else{
+            $phone_num = $data[0]['PhoNum'];
+            $messageKey = '';
+            $scoreKey = 'msg_' . $phone_num . '_score';
+            $incKey = 'phone_receive';
+        }
         if (!$phone_num){
             return '号码不存在';
         }
         //获取的短信数组每条循环写入到redis里面
         //采集有序集合的方式,每条记录给一个分数
-        $messageKey = Config::get('cache.prefix') . 'message:';
         $redis = new RedisController('sync');
         $number = count($data);
         //dump($data);
         for ($i = 1; $i < $number+1; $i++) {
-            $redis->zAdd($messageKey . $phone_num, $redis->getRedisSet($messageKey . $phone_num . '_score'), serialize($data[$number-$i]));
+            $redis->zAdd($messageKey . $phone_num, $redis->getRedisSet($scoreKey), serialize($data[$number-$i]));
         }
-        $redis->hIncrby(Config::get('cache.prefix') . 'phone_receive', $phone_num);
+        $redis->hIncrby($incKey, $phone_num);
         //如果集合内数据超过50条,就把该条数据加入队列入库处理
         $number = $redis->checkZset($messageKey . $phone_num);
 
@@ -69,18 +79,22 @@ class MsgQueueController extends Controller
             $redis->setSetValue($messageKey . 'msg_queue', $phone_num);
         }
     }
-    
+
     //如果请求错误，回调通知，删除本地单个号码请求频率限制
     public function callbackCurlFailNumber(){
         $phone_num = input('post.phone_num');
         if (!$phone_num){
             return show('参数异常');
         }
-        $uid = (new PhoneModel())->getUidPhone($phone_num, 'phone_num');
-        $key_phone_click = Config::get('cache.prefix') . 'click:' . $uid;
+        if (config('database.domain') == 'best20161108'){
+            $uid = (new PhoneModel())->getUidPhone($phone_num, 'phone_num');
+            $key_phone_click = Config::get('cache.prefix') . 'click:' . $uid;
+        }else{
+            $key_phone_click = 'click:' . $phone_num;
+        }
         return (new RedisController())->del($key_phone_click);
     }
-    
+
     //接收上游转发过来的号码进行sync入库 -- MYS
     public function receiveNumberMys(){
         if (!Request::isPost()){
