@@ -60,7 +60,7 @@ class SettingController extends BaseController
         if(!$online_date){
             return show('参数错误', '', 4000);
         }
-        $redis = new RedisController();
+        $redis = new RedisController('sync');
         $result = $redis->setStringValue('phone_online_time', $online_date);
         if($result){
             return show('上线时间设置成功');
