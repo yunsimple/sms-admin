@@ -78,6 +78,7 @@ class MsgQueueController extends Controller
             //加入待处理列表
             $redis->setSetValue($messageKey . 'msg_queue', $phone_num);
         }
+        return 'success';
     }
 
     //如果请求错误，回调通知，删除本地单个号码请求频率限制
