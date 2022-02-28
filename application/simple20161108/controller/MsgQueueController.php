@@ -26,7 +26,15 @@ class MsgQueueController extends Controller
     public function heartBeat(){
         return 1;
     }
-
+    
+    public function test(){
+        debug('begin');
+        $result = (new RedisController('spider'))->get("notify:url");
+        debug('end');
+        dump($result);
+        dump(debug('begin','end').'s');
+    }
+    
     //根据实际号码，获取uid
     protected function getPhoneDetailByPhone($phone){
         $result = Db::table('phone')
@@ -47,6 +55,7 @@ class MsgQueueController extends Controller
             return false;
         }
         $data = input('post.');
+        trace($data, 'notice');
         if (config('database.subdomain') == 'best20161108'){
             $prefix = Config::get('cache.prefix');
             $phone_num = $this->getPhoneDetailByPhone($data[0]['PhoNum']);
@@ -62,6 +71,7 @@ class MsgQueueController extends Controller
         if (!$phone_num){
             return '号码不存在';
         }
+        
         //获取的短信数组每条循环写入到redis里面
         //采集有序集合的方式,每条记录给一个分数
         $redis = new RedisController('sync');

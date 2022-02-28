@@ -53,6 +53,11 @@ class RedisController extends Controller
     ];
     protected $config_sync;
     protected $config_master;
+    protected $config_spider = [
+        'port' => 17481,
+        'host' => '',
+        'auth' => '2fljeTsA6WBiLn8HUoWh',        
+    ];
 
 
     /**
@@ -72,6 +77,8 @@ class RedisController extends Controller
                 'auth' => config('database.redis_master_auth'),
             ];
             $config = $this->config_master;
+        }elseif($config == 'spider'){
+            $config = $this->config_spider;
         }else{
             $this->config_sync = [
                 'port' => config('database.redis_sync_port'),
