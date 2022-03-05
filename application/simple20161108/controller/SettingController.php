@@ -20,7 +20,7 @@ use TencentCloud\Vpc\V20170312\Models\DescribeTaskResultRequest;
 class SettingController extends BaseController
 {
     public function index(){
-        $redis = new RedisController('sync');
+        $redis = new RedisController();
         $old_url = $redis->redisSetStringValue('curl_url');
         $ad_switch = $redis->searchReturnValue('ad_switch');
         if ($ad_switch == 1){
@@ -60,8 +60,8 @@ class SettingController extends BaseController
         if(!$online_date){
             return show('参数错误', '', 4000);
         }
-        $redis = new RedisController('sync');
-        $result = $redis->setStringValue('phone_online_time', $online_date);
+        $redis = new RedisController('master');
+        $result = $redis->setStringValue(env('redis.alias') . ':phone_online_time', $online_date);
         if($result){
             return show('上线时间设置成功');
         }else{

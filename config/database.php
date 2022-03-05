@@ -15,13 +15,13 @@ return [
     // 服务器地址
     'hostname'        => '127.0.0.1',
     // 数据库名
-    'database'        => env('DATABASE.DATABASE', 'best'),
+    'database'        => env('DATABASE.DATABASE'),
     // 用户名
-    'username'        => env('DATABASE.USERNAME', 'best'),
+    'username'        => env('DATABASE.USERNAME'),
     // 密码
-    'password'        => env('DATABASE.PASSWORD', 'CZDAH0uf8I75WxyXh6VV'),
+    'password'        => env('DATABASE.PASSWORD'),
     // 端口
-    'hostport'        => env('DATABASE.HOSTPROT', '18480'),
+    'hostport'        => env('DATABASE.HOSTPROT'),
     // 连接dsn
     'dsn'             => '',
     // 数据库连接参数
@@ -60,31 +60,5 @@ return [
     'break_reconnect' => false,
     // 断线标识字符串
     'break_match_str' => [],
-    //历史记录数据存放
-    'db_master_write' => [
-        'type'            => 'mysql',
-        // 服务器地址
-        'hostname'        => env('database.MASTER_HOSTNAME', '23.2'),
-        // 数据库名
-        'database'        => env('database.MASTER_DATABASE', 'mys'),
-        // 用户名
-        'username'        => env('database.MASTER_USERNAME', 'mys'),
-        // 密码
-        'password'        => env('database.MASTER_PASSWORD', 'CZDAH0uf8I75WxyXh6VV'),
-        // 端口
-        'hostport'        => env('database.MASTER_HOSTPROT', '18480'),
-        // 连接dsn
-        'dsn'             => '',
-        // 数据库连接参数
-        'params'          => [],
-        // 数据库编码默认采用utf8
-        'charset'         => 'utf8mb4',
-    ],
-    'redis_sync_port'     => env('redis.SYNC_PORT', 17480),
-    'redis_sync_host'     => env('redis.SYNC_HOST', '127.0.0.1'),
-    'redis_sync_auth'     => env('redis.SYNC_AUTH', ''),
-    'redis_master_port'   => env('redis.MASTER_PORT', 16699),
-    'redis_master_host'   => env('redis.MASTER_HOST', '150.158.96.247'),
-    'redis_master_auth'   => env('redis.MASTER_AUTH', 'r39iO6SE2uMYM5c54Kw9'),
-    'subdomain'           => env('setting.SUBDOMAIN', 'best20161108'),
+    'subdomain'           => env('setting.SUBDOMAIN'),
 ];

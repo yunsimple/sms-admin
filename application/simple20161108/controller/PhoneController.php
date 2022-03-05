@@ -52,7 +52,7 @@ class PhoneController extends BaseController
             $result = $phone_model->adminGetNormalPhone($page, $limit);
             $count = (new PhoneModel())->getPhoneCount(1);
         }
-        $redis = new RedisController('sync');
+        $redis = new RedisController();
         for ($i = 0; $i < count($result); $i++) {
         	$result[$i]['report'] = $redis->redisCheck('report_' . $result[$i]['phone_num']);
             $result[$i]['country1'] = $result[$i]['country']['title'];
@@ -159,16 +159,6 @@ class PhoneController extends BaseController
         if (!$result) {
             return show('切换失败,请稍候重试', '', 4000);
         } else {
-            if(config('database.subdomain') == 'best20161108'){
-                $redis = new RedisController('sync');
-                $phone_detail = Db::table('phone')->where('phone_num', $phone_num)->value('uid');
-                $redis->deleteString(Config::get('cache.prefix') .'phone_detail_' . $phone_detail);
-            }else{
-                $redis = new RedisController();
-                $redis->delRedis();
-                $phone_detail = Db::table('phone')->where('phone_num', $phone_num)->value('uid');
-                $redis->deleteString('phone_detail_' . $phone_detail);
-            }
             return show('修改成功', $result);
         }
     }

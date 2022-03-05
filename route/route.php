@@ -12,7 +12,7 @@ use think\facade\Route;
 
 $sub_domain = get_subdomain();
 $domain = get_domain();
-if ($sub_domain == env('SETTING.SUBDOMAIN', 'best20161108')){
+if ($sub_domain == env('SETTING.SUBDOMAIN')){
 	// blog子域名绑定到blog模块
 	Route::domain($sub_domain, 'simple20161108');
 	Route::get('verify', 'simple20161108/Login/verify'); //验证码

@@ -52,11 +52,11 @@ class RedisController extends Controller
         'auth' => '',
     ];
     protected $config_sync;
-    protected $config_master;
-    protected $config_spider = [
-        'port' => 17481,
-        'host' => '',
-        'auth' => '2fljeTsA6WBiLn8HUoWh',        
+    protected $config_master = [
+        //master需要远程写入
+        'port' => 17480,
+        'host' => '23.239.2.123',
+        'auth' => 'PjKnXgXGTyp85Synh9wq',    
     ];
 
 
@@ -71,22 +71,11 @@ class RedisController extends Controller
         if ($config == 'local'){
             $config = $this->config_local;
         }elseif($config == 'master'){
-            $this->config_master = [
-                'port' => config('database.redis_master_port'),
-                'host' => config('database.redis_master_host'),
-                'auth' => config('database.redis_master_auth'),
-            ];
             $config = $this->config_master;
-        }elseif($config == 'spider'){
-            $config = $this->config_spider;
         }else{
-            $this->config_sync = [
-                'port' => config('database.redis_sync_port'),
-                'host' => config('database.redis_sync_host'),
-                'auth' => config('database.redis_sync_auth'),
-            ];
-            $config = $this->config_sync;
+            $config = $this->config_local;
         }
+        
         $this->attr = array_merge($this->attr, $attr);
         self::$redis = new \Redis();
         $this->port = $config['port'];
