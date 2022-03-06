@@ -115,6 +115,21 @@ class PhoneController extends BaseController
             return show('添加失败,请重试', '', 4000);
         }
     }
+    
+    //更新所有号码缓存
+    public function update(){
+        $phone_num = trim(input('post.phone_num'));
+        $redis = new RedisController('master');
+        $phone_model = new PhoneModel();
+        
+        $result = $phone_model->setPhoneCache($phone_num);
+        
+        if($result){
+            return show('缓存更新成功'); 
+        }else{
+            return show('缓存更新失败,请重试', '', 4000);
+        }
+    }
 
     //开关切换
     public function check01()
@@ -156,10 +171,16 @@ class PhoneController extends BaseController
             default:
                 $result = '';
         }
+        
         if (!$result) {
             return show('切换失败,请稍候重试', '', 4000);
         } else {
-            return show('修改成功', $result);
+            $result = $phone_model->setPhoneCache($phone_num);
+            if($result){
+                return show('信息更改成功，已更新缓存', $result);
+            }else{
+                return show('信息更改成功，缓存更新失败', $result);
+            }
         }
     }
 

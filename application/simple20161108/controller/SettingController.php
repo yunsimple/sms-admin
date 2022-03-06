@@ -30,6 +30,8 @@ class SettingController extends BaseController
         }
         $this->assign('ad_switch', $ad_switch);
         $this->assign('old_url', $old_url);
+        $key = env('redis_alias') . ':phone_online_time';
+        $this->assign('phone_online_time', (new RedisController('master'))->redisCheck($key) . '000');
         return $this->fetch();
     }
 
@@ -126,6 +128,7 @@ class SettingController extends BaseController
      * 全自动一键更新腾讯云EIP,采集服务器BT站点,云解析
      */
     public function changeOneCurlUrl(){
+        return show('关闭', '', 4000);
         //获取旧EIP的id和IP地址
         //新建一个EIP,并且先进行BT站点绑定
         //解绑旧的EIP,并且释放

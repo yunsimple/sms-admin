@@ -22,7 +22,6 @@
         <div class="layui-card-body">
             <div class="form-box">
                 <div class="layui-form layui-form-item">
-                    <div class="layui-inline">
                         <div class="layui-input-inline">
                             <input type="text" id="phone_num" autocomplete="off" class="layui-input"
                                    placeholder="输入要查询的号码">
@@ -46,8 +45,7 @@
                         <button class="layui-btn layui-btn-blue" onclick="search()" style="margin-left: 10px;">查询</button>
                         <button class="layui-btn layui-btn-primary" onclick="show_all()">所有号码</button>
                         <button class="layui-btn layui-btn-primary" onclick="reset()">重载</button>
-                        
-                    </div>
+                        <button class="layui-btn layui-btn-primary" onclick="update()">更新号码缓存</button>
                 </div>
                 <table id="tablePhone" lay-filter="tablePhone"></table>
             </div>
@@ -184,6 +182,29 @@
             area: ['80%', '90%'],
             content: '/admin20161108/phone/adminshowmsg/phone_num/'+phone_num+'.html'
         });
+    }
+    
+    function update(){
+        let phone_num = $('#phone_num').val()
+        if(phone_num){
+            title = '重新更新该号码缓存：' + phone_num
+        }else{
+            title = '重新更新所有号码缓存'
+        }
+        layer.confirm(title, {btn: ['更新', '取消']}, function () {
+                $.ajax({
+                url: 'update',
+                type: 'post',
+                data: {phone_num: phone_num},
+                success: function (e) {
+                    if (e.error_code != 0) {
+                        layer.msg(e.msg, {icon: 2, anim: 6})
+                    } else {
+                        layer.msg(e.msg, {icon: 1, anim: 6})
+                    }
+                }
+            })
+        })
     }
 </script>
 <script>

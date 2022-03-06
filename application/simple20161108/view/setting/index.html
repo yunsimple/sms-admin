@@ -28,7 +28,7 @@
                                     <label class="layui-form-label"></label>
                                     <div class="layui-col-md6">
                                         <blockquote class="layui-elem-quote layui-quote-nm">
-                                            更改此处的采集地址，会同时更新采集服务器的BT绑定地址，以及采集的解析地址，请勿滥用，只有当采集失败的时候才能使用！！！
+                                            更改此处的采集地址，会同时更新采集服务器的绑定地址，以及采集的解析地址，请勿滥用，只有当采集失败的时候才能使用！！！
                                         </blockquote>
                                     </div>
                                 </div>
@@ -62,7 +62,7 @@
                                     <label class="layui-form-label"></label>
                                     <div class="layui-col-md6">
                                         <blockquote class="layui-elem-quote layui-quote-nm">
-                                            一键同时获取腾讯云EIP，更新采集服务器IP地址，请勿频繁使用，EIP闲置会收费，操作过程需要10秒左右，请勿关闭！！！
+                                            一键同时获取EIP，更新采集服务器IP地址，请勿频繁使用，EIP闲置会收费，操作过程需要10秒左右，请勿关闭！！！
                                         </blockquote>
                                     </div>
                                 </div>
@@ -226,6 +226,7 @@ layui.use('laydate', function(){
   laydate.render({
     elem: '#onlineTime', //指定元素
     type: 'datetime',
+    value: new Date({$phone_online_time}),
     done: function(value, date, endDate){
         $('#onlineTime').val(value)
     }

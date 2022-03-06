@@ -608,6 +608,33 @@ class PhoneModel extends BaseModel
         }
         return $result;
     }
+    
+    public function setPhoneCache($phone = ''){
+        $key = env('redis_alias') . ':phone_detail:';
+        $redis = new RedisController('master');
+        if($phone){
+            $result = self::with(['country', 'warehouse'])
+                ->where('phone_num', $phone)
+                ->find();
+            if($result){
+                return $redis->set($key . $phone, serialize($result->toArray()));
+            }else{
+                return false;
+            }
+        }else{
+            //缓存所有
+            $phone = self::with(['country', 'warehouse'])->select();
+            if(count($phone) > 0){
+                $new_data = [];
+                foreach ($phone as $value){
+                    $new_data[$key . $value['phone_num']] = serialize($value->toArray());
+                }
+                return $redis->mset($new_data);
+            }else{
+                return false;
+            }
+        }
+    }
 
     //查询每个国家的号码总数/不包括隐藏
     public function getCountryPhoneCount($country_id){
