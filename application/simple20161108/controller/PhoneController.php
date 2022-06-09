@@ -101,7 +101,9 @@ class PhoneController extends BaseController
         //写入数据
         $data['en_sort'] = $data['sort'];
         try {
-            $data['uid'] = getRandNum(10);
+            if($data['uid'] == ''){
+                $data['uid'] = getRandNum(10);
+            }
             $result = $phone_model->createPhone($data);
         } catch (\Exception $e) {
             return show('添加出现异常', '', 4000);
@@ -136,7 +138,7 @@ class PhoneController extends BaseController
     {
         $data = input('post.');
         $phone_num = $data['phone_num'];
-        if ($data['field'] == 'sort' || $data['field'] == 'en_sort' || $data['field'] == 'phone_id' || $data['field'] == 'type') {
+        if ($data['field'] == 'sort' || $data['field'] == 'en_sort' || $data['field'] == 'phone_id' || $data['field'] == 'uid' || $data['field'] == 'type') {
             $value = $data['value'];
         } else {
             if ($data['value'] == 0) {
@@ -162,6 +164,9 @@ class PhoneController extends BaseController
             case 'phone_id':
                 $result = $phone_model->check01($phone_num, 'phone_id', $value);
                 break;
+            case 'uid':
+                $result = $phone_model->check01($phone_num, 'uid', $value);
+                break;    
             case 'display':
                 $result = $phone_model->check01($phone_num, 'display', $value);
                 break;
