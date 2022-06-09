@@ -28,12 +28,9 @@ class MsgQueueController extends Controller
     }
     
     public function test(){
-        debug('begin');
-        $result = (new RedisController('spider'))->get("notify:url");
-        debug('end');
-        dump($result);
-        dump(debug('begin','end').'s');
+        dump('test');
     }
+    
     
     //根据实际号码，获取uid
     protected function getPhoneDetailByPhone($phone){

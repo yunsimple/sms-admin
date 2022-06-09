@@ -280,7 +280,8 @@ class ServiceQueueController extends Controller
                         $transpond_email_number++;
                     }
                 }*/
-        $redis = new RedisController('sync');
+        $redis = new RedisController('master');
+        
         $mails = $redis->getSetAllValue('mail_domain');
         foreach ($mails as $value){
             $result = (new MailController())->getMailBoxs($value);
