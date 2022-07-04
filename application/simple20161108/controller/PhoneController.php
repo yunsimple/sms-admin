@@ -91,6 +91,11 @@ class PhoneController extends BaseController
         if ($value) {
             return show($data['phone_num'] . '已经存在', '', 3000);
         }
+        $data['uid'] = trim($data['uid']);
+        $data['phone_num'] = trim($data['phone_num']);
+        $data['phone_id'] = trim($data['phone_id']);
+        $data['sort'] = trim($data['sort']);
+        $data['type'] = trim($data['type']);
         $validate = new PhoneValidate();
         if (!$validate->check($data)) {
             return show($validate->getError(), '', 3000);
