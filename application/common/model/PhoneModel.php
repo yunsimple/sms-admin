@@ -54,6 +54,7 @@ class PhoneModel extends BaseModel
     public function adminGetPhone($phone_num){
         $result = self::with(['country', 'warehouse'])
             ->where('phone_num', 'like', '%' . $phone_num . '%')
+            ->whereOr('uid', 'like', '%' . $phone_num . '%')
             ->order('online', 'desc')
             ->select();
         $result = $result->hidden(['update_time','delete_time', 'country.id', 'country.bh', 'country.show', 'warehouse.id', 'warehouse.show', 'country_id', 'warehouse_id']);
