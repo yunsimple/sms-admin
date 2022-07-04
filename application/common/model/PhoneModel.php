@@ -24,10 +24,10 @@ class PhoneModel extends BaseModel
     public function adminGetAllPhone($page, $limit){
         $result = self::with(['country', 'warehouse'])
             ->page($page, $limit)
-            ->order('online', 'desc')
-            ->order('sort', 'desc')
-            ->order('country_id', 'asc')
-            ->order('warehouse_id', 'desc')
+            //->order('online', 'desc')
+            //->order('sort', 'desc')
+            //->order('country_id', 'asc')
+            //->order('warehouse_id', 'desc')
             ->order('id', 'desc')
             ->select();
         $result = $result->hidden(['update_time','delete_time', 'country.id', 'country.bh', 'country.show', 'warehouse.id', 'warehouse.show', 'country_id', 'warehouse_id']);
@@ -37,13 +37,13 @@ class PhoneModel extends BaseModel
         //后台首页调用所有号码
     public function adminGetNormalPhone($page, $limit){
         $result = self::with(['country', 'warehouse'])
-            ->where('show', '=', 1)
-            ->where('online', '=', 1)
+            //->where('show', '=', 1)
+            //->where('online', '=', 1)
             ->page($page, $limit)
-            ->order('online', 'desc')
-            ->order('sort', 'desc')
-            ->order('country_id', 'asc')
-            ->order('warehouse_id', 'desc')
+            //->order('online', 'desc')
+            //->order('sort', 'desc')
+            //->order('country_id', 'asc')
+            //->order('warehouse_id', 'desc')
             ->order('id', 'desc')
             ->select();
         $result = $result->hidden(['update_time','delete_time', 'country.id', 'country.bh', 'country.show', 'warehouse.id', 'warehouse.show', 'country_id', 'warehouse_id']);
