@@ -52,9 +52,9 @@ class PhoneController extends BaseController
             $result = $phone_model->adminGetNormalPhone($page, $limit);
             $count = (new PhoneModel())->getPhoneCount(1);
         }
-        $redis = new RedisController();
+        $redis = new RedisController('master');
         for ($i = 0; $i < count($result); $i++) {
-        	$result[$i]['report'] = $redis->redisCheck('report_' . $result[$i]['phone_num']);
+        	$result[$i]['report'] = $redis->redisCheck('report:' . $result[$i]['phone_num']);
             $result[$i]['country1'] = $result[$i]['country']['title'];
             $result[$i]['en_title'] = strtolower($result[$i]['country']['en_title']);
             unset($result[$i]['country']);
