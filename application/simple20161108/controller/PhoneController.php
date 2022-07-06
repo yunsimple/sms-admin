@@ -143,7 +143,8 @@ class PhoneController extends BaseController
     {
         $data = input('post.');
         $phone_num = $data['phone_num'];
-        if ($data['field'] == 'sort' || $data['field'] == 'en_sort' || $data['field'] == 'phone_id' || $data['field'] == 'uid' || $data['field'] == 'type') {
+        $value = $data['value'];
+        /*if ($data['field'] == 'sort' || $data['field'] == 'en_sort' || $data['field'] == 'phone_id' || $data['field'] == 'uid' || $data['field'] == 'type') {
             $value = $data['value'];
         } else {
             if ($data['value'] == 0) {
@@ -151,13 +152,15 @@ class PhoneController extends BaseController
             } elseif ($data['value'] == 1) {
                 $value = 0;
             }
-        }
+        }*/
         $phone_model = new PhoneModel();
         switch ($data['field']) {
             case 'online':
+                $value = $this->getSwitchValue($phone_num, 'online');
                 $result = $phone_model->check01($phone_num, 'online', $value);
                 break;
             case 'show':
+                $value = $this->getSwitchValue($phone_num, 'show');
                 $result = $phone_model->check01($phone_num, 'show', $value);
                 break;
             case 'sort':
@@ -173,6 +176,7 @@ class PhoneController extends BaseController
                 $result = $phone_model->check01($phone_num, 'uid', $value);
                 break;    
             case 'display':
+                $value = $this->getSwitchValue($phone_num, 'display');
                 $result = $phone_model->check01($phone_num, 'display', $value);
                 break;
             case 'type':
@@ -191,6 +195,17 @@ class PhoneController extends BaseController
             }else{
                 return show('信息更改成功，缓存更新失败', $result);
             }
+        }
+    }
+    
+    private function getSwitchValue($phone_num, $field){
+        // 先尝试获取当前值，然后直接开关取反
+        $phone_model = new PhoneModel();
+        $value = $phone_model->getPhoneValue($phone_num, $field);
+        if($value == 1){
+            return 0;
+        }else{
+            return 1;
         }
     }
 

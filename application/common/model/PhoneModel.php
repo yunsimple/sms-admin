@@ -189,43 +189,6 @@ class PhoneModel extends BaseModel
         return $result;
     }
 
-    //小程序调用API
-    public function xcxPartPhoneNum($region, $page = 1, $limit = 21){
-        switch ($region){
-            case 'dl':
-                $result = self::with('country')
-                    ->where('country_id', '=', 1)
-                    ->where('show', '=', 1)
-                    ->order('online', 'desc')
-                    ->order('sort', 'desc')
-                    ->order('id', 'desc')
-                    ->page($page, $limit)
-                    ->select();
-                break;
-            case 'gat':
-                $result = self::with('country')
-                    ->where('country_id', '=', 7)
-                    ->where('show', '=', 1)
-                    ->order('online', 'desc')
-                    ->order('sort', 'desc')
-                    ->order('id', 'desc')
-                    ->page($page, $limit)
-                    ->select();
-                break;
-            case 'gw':
-                $result = self::with('country')
-                    ->where('country_id', '<>', 1)
-                    ->where('country_id', '<>', 7)
-                    ->where('show', '=', 1)
-                    ->order('online', 'desc')
-                    ->order('sort', 'desc')
-                    ->order('id', 'desc')
-                    ->page($page, $limit)
-                    ->select();
-        }
-        return $result;
-    }
-
     //查询各地区号码总数
     public function getRegionNum(){
         $region['dl'] = self::with('country')
