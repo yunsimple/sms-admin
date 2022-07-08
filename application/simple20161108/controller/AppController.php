@@ -3,6 +3,7 @@ namespace app\simple20161108\controller;
 
 use app\common\model\AdOrderModel;
 use app\common\model\FirebaseUserModel;
+use Ip2Region;
 
 class AppController extends BaseController
 {
@@ -22,6 +23,15 @@ class AppController extends BaseController
         }else{
             $result = $firebase_user_model->page($page,$limit)->order('id', 'desc')->select();
             $count = $firebase_user_model->count();
+        }
+        //解析IP地址
+        $ip2region = new Ip2Region();
+        foreach ($result as $key=>$value){
+            if($value['ip']){
+                $ip_info = $ip2region->memorySearch($value['ip'])['region'];
+                $ip = getIpRegion($ip_info);
+                $result[$key]['ip'] = $ip . '('.$value['ip'] . ')';
+            }
         }
         $result = [
             'code' => 0,
@@ -80,7 +90,15 @@ class AppController extends BaseController
             $result = $ad_order_model->page($page,$limit)->order('id', 'desc')->select();
             $count = $ad_order_model->count();
         }
-
+        //解析IP地址
+        $ip2region = new Ip2Region();
+        foreach ($result as $key=>$value){
+            if($value['ip']){
+                $ip_info = $ip2region->memorySearch($value['ip'])['region'];
+                $ip = getIpRegion($ip_info);
+                $result[$key]['ip'] = $ip . '('.$value['ip'] . ')';
+            }
+        }
         $result = [
             'code' => 0,
             'msg' => '',
