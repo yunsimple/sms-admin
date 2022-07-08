@@ -17,7 +17,7 @@ class AppController extends BaseController
         $limit = $data['limit'];
         $firebase_user_model = new FirebaseUserModel();
         if(array_key_exists('search', $data)){
-            $result = $firebase_user_model->whereOr([['user','like', '%'. $data['data']['title'] .'%'], ['user_id','like', '%'. $data['data']['title'] .'%']])->select();
+            $result = $firebase_user_model->whereOr([['user','like', '%'. $data['data']['title'] .'%'], ['user_id','like', '%'. $data['data']['title'] .'%']])->order('id', 'desc')->select();
             $count = count($result);
         }else{
             $result = $firebase_user_model->page($page,$limit)->order('id', 'desc')->select();
@@ -74,7 +74,7 @@ class AppController extends BaseController
         $limit = $data['limit'];
         $ad_order_model = new AdOrderModel();
         if (array_key_exists('search', $data)){
-            $result = $ad_order_model->whereOr([['user_id','like', '%'. $data['data']['title'] .'%'], ['phone_num','like', '%'. $data['data']['title'] .'%']])->select();
+            $result = $ad_order_model->whereOr([['user_id','like', '%'. $data['data']['title'] .'%'], ['phone_num','like', '%'. $data['data']['title'] .'%']])->order('id', 'desc')->select();
             $count = count($result);
         }else{
             $result = $ad_order_model->page($page,$limit)->order('id', 'desc')->select();
