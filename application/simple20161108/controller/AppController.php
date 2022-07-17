@@ -124,13 +124,13 @@ class AppController extends BaseController
             if($title){
                 if($startDate && $endDate){
                     $result = $ad_order_model
-                        ->whereOr([['user', '=', $title], ['user_id', '=', $title], ['ip', '=', $title]])
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
                         ->order('id', 'desc')
                         ->whereTime('create_time', [$startDate, $endDate])
                         ->select();
                 }else{
                     $result = $ad_order_model
-                        ->whereOr([['user', '=', $title], ['user_id', '=', $title], ['ip', '=', $title]])
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
                         ->order('id', 'desc')
                         ->select();
                 }
