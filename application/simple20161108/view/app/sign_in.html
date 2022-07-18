@@ -66,7 +66,7 @@
     //展示已知数据
     table.render({
         elem: '#tablePhone'
-        , url: 'adOrderTableData'
+        , url: 'signInTableData'
         , cellMinWidth: 80
         , toolbar: '#toolbar'
         , cols: [[ //标题栏
@@ -75,9 +75,9 @@
             , {field: 'user_id', title: 'user_id', width:280}
             , {field: 'coins', title: '分数', sort: true, width:80}
             , {field: 'type', title: '类型', sort: true, width:80}
-            , {field: 'phone_num', title: '购买号码', sort: true}
+            , {field: 'version', title: '版本', sort: true, width:80}
             , {field: 'ip', title: 'ip地址', sort: true}
-            , {field: 'json', title: '详细信息'}
+            , {field: 'remark', title: '备注'}
             , {field: 'update_time', title: '更新时间', sort: true}
             , {field: 'create_time', title: '创建时间', sort: true}
         ]]
@@ -98,7 +98,7 @@
             return
         }
         //执行重载
-        table.reload('adOrderTableData', {
+        table.reload('tablePhone', {
             page: {
                 curr: 1 //重新从第 1 页开始
             }
@@ -124,7 +124,7 @@
             var checkStatus = table.checkStatus(obj.config.id)
             var data = checkStatus.data;
             $.ajax({
-                url: 'deleteAdOrderMany',
+                url: 'deleteSignInMany',
                 type: 'post',
                 data: {data: data},
                 success: function (e) {

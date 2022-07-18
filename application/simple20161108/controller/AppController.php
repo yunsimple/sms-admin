@@ -3,6 +3,7 @@ namespace app\simple20161108\controller;
 
 use app\common\model\AdOrderModel;
 use app\common\model\FirebaseUserModel;
+use app\common\model\ActivityModel;
 use Ip2Region;
 
 class AppController extends BaseController
@@ -183,6 +184,92 @@ class AppController extends BaseController
             array_push($id, $value['id']);
         }
         $result = (new AdOrderModel())->destroy($id);
+        if (!$result) {
+            return show('删除失败,请稍候重试', '', 4000);
+        } else {
+            return show('删除成功', $result);
+        }
+    }
+    
+    public function signIn(){
+        return $this->fetch('app/sign_in');
+    }
+
+    public function signInTableData(): \think\response\Json
+    {
+        $data = input('get.');
+        $page = $data['page'];
+        $limit = $data['limit'];
+        $ad_order_model = new ActivityModel();
+        if (array_key_exists('search', $data)){
+            //$result = $ad_order_model->whereOr([['user_id','like', '%'. $data['data']['title'] .'%'], ['phone_num','like', '%'. $data['data']['title'] .'%']])->order('id', 'desc')->select();
+            
+            $title = $data['data']['title'];
+            $startDate = $data['data']['startDate'];
+            $endDate = $data['data']['endDate'];
+            
+            if($title){
+                if($startDate && $endDate){
+                    $result = $ad_order_model
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
+                        ->order('id', 'desc')
+                        ->whereTime('create_time', [$startDate, $endDate])
+                        ->select();
+                }else{
+                    $result = $ad_order_model
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
+                        ->order('id', 'desc')
+                        ->select();
+                }
+            }else{
+                if(!$startDate && !$endDate){
+                    $result = $ad_order_model->page($page,$limit)->order('id', 'desc')->select();
+                }elseif($startDate && $endDate){
+                    $result = $ad_order_model
+                        ->order('id', 'desc')
+                        ->whereTime('create_time', [$startDate, $endDate])
+                        ->select();
+                }else{
+                    $result = $ad_order_model
+                        ->order('id', 'desc')
+                        ->select();
+                }
+            }
+            
+            $count = count($result);
+        }else{
+            $result = $ad_order_model->page($page,$limit)->order('id', 'desc')->select();
+            $count = $ad_order_model->count();
+        }
+        //解析IP地址
+        $ip2region = new Ip2Region();
+        foreach ($result as $key=>$value){
+            if($value['ip']){
+                $ip_info = $ip2region->memorySearch($value['ip'])['region'];
+                $ip = getIpRegion($ip_info);
+                $result[$key]['ip'] = $ip . '('.$value['ip'] . ')';
+            }
+        }
+        $result = [
+            'code' => 0,
+            'msg' => '',
+            'count' => $count,
+            'data' => $result,
+        ];
+        return json($result);
+    }
+
+    public function deleteSignInMany()
+    {
+        $data = input('post.data');
+        if (!$data) {
+            return show('请选择要删除的数据', '', 4000);
+        }
+        $id = [];
+        foreach ($data as $value) {
+            array_push($id, $value['id']);
+        }
+        $result = (new ActivityModel())->destroy($id);
         if (!$result) {
             return show('删除失败,请稍候重试', '', 4000);
         } else {
