@@ -5,6 +5,9 @@ use app\common\model\AdOrderModel;
 use app\common\model\FirebaseUserModel;
 use app\common\model\ActivityModel;
 use Ip2Region;
+use app\common\model\PhoneModel;
+use app\common\controller\RedisController;
+
 
 class AppController extends BaseController
 {
@@ -276,4 +279,80 @@ class AppController extends BaseController
             return show('删除成功', $result);
         }
     }
+    
+    public function vip(){
+        return $this->fetch('app/vip');
+    }
+
+    public function vipTableData(): \think\response\Json
+    {
+        $data = input('get.');
+        $page = $data['page'];
+        $limit = $data['limit'];
+        $phone_model = new PhoneModel();
+        if (array_key_exists('search', $data)){
+            //$result = $phone_model->whereOr([['user_id','like', '%'. $data['data']['title'] .'%'], ['phone_num','like', '%'. $data['data']['title'] .'%']])->order('id', 'desc')->select();
+            
+            $title = $data['data']['title'];
+            $startDate = $data['data']['startDate'];
+            $endDate = $data['data']['endDate'];
+            
+            if($title){
+                if($startDate && $endDate){
+                    $result = $phone_model
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
+                        ->order('id', 'desc')
+                        ->whereTime('create_time', [$startDate, $endDate])
+                        ->select();
+                }else{
+                    $result = $phone_model
+                        ->whereOr([['user_id', '=', $title], ['ip', '=', $title]])
+                        ->order('id', 'desc')
+                        ->select();
+                }
+            }else{
+                if(!$startDate && !$endDate){
+                    $result = $phone_model->page($page,$limit)->order('id', 'desc')->select();
+                }elseif($startDate && $endDate){
+                    $result = $phone_model
+                        ->order('id', 'desc')
+                        ->whereTime('create_time', [$startDate, $endDate])
+                        ->select();
+                }else{
+                    $result = $phone_model
+                        ->order('id', 'desc')
+                        ->select();
+                }
+            }
+            
+            $count = count($result);
+        }else{
+            $result = $phone_model->where('type', '=', 3)->page($page,$limit)->order('id', 'desc')->select();
+            $count = $phone_model->where('type', '=', 3)->count();
+        }
+        
+        $redis = new RedisController('master');
+        $ad_order_model = new AdOrderModel();
+        for ($i = 0; $i < count($result); $i++) {
+            // 反馈数量
+        	$result[$i]['report'] = $redis->redisCheck('report:' . $result[$i]['phone_num']);
+            $result[$i]['country1'] = $result[$i]['country']['title'];
+            $result[$i]['en_title'] = strtolower($result[$i]['country']['en_title']);
+            unset($result[$i]['country']);
+            $result[$i]['warehouse1'] = $result[$i]['warehouse']['url'];
+            unset($result[$i]['warehouse']);
+            
+            // 查询vip号码被换购次数
+            $result[$i]['buy_number'] = $ad_order_model->where('phone_num', '=', $result[$i]['phone_num'])->count();
+        }
+        
+        $result = [
+            'code' => 0,
+            'msg' => '',
+            'count' => $count,
+            'data' => $result,
+        ];
+        return json($result);
+    }
+    
 }
